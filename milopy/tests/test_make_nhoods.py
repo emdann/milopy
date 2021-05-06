@@ -2,7 +2,7 @@
 import pytest
 import scanpy as sc
 import numpy as np
-from milopy.core import make_nhoods
+from ..milopy.core import make_nhoods
 
 adata_example = sc.datasets.pbmc68k_reduced()
 

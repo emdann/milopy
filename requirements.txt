@@ -2,3 +2,5 @@ scanpy
 pandas
 anndata
 numpy
+rpy2
+scipy
