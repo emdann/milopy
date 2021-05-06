@@ -14,6 +14,8 @@ pip install .
 ## Example usage
 ```python
 import scanpy as sc
+import numpy as np
+
 import milopy
 import milopy.core as milo
 ```
