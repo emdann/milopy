@@ -12,19 +12,19 @@ pip install .
 ```
 
 ## Example usage
-```
+```python
 import scanpy as sc
 import milopy
 import milopy.core as milo
 ```
 
 Load example dataset
-```
+```python
 adata = sc.datasets.pbmc3k_processed()
 ```
 
 Simulate experimental condition and replicates
-```
+```python
 ## Simulate experimental condition ##
 adata.obs["condition"] = np.random.choice(["ConditionA", "ConditionB"], size=adata.n_obs, p=[0.5,0.5])
 # we simulate differential abundance in NK cells
@@ -39,7 +39,7 @@ sc.pl.umap(adata, color=["louvain","condition", "sample"])
 ```
 
 Test for differential abundance with Milo
-```
+```python
 ## Build KNN graph
 sc.pp.neighbors(adata, n_neighbors=10)
 
@@ -58,7 +58,7 @@ milo_results
 ```
 
 Visualize results on UMAP embedding
-```
+```python
 milopy.utils.build_nhood_graph(adata)
 milopy.plot.plot_nhood_graph(adata, alpha=0.2, min_size=5)
 ```
