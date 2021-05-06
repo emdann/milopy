@@ -60,7 +60,7 @@ def build_nhood_graph(adata, basis="X_umap"):
     - basis: string indicating the name of the obsm basis to use to use for layout of neighbourhoods (key in `adata.obsm`)
     '''
     ## Add embedding positions
-    adata.uns["nhood_adata"].obsm["X_milo_graph"] = adata[adata.obs["nhood_ixs_refined"]==1].obsm[use_rep]
+    adata.uns["nhood_adata"].obsm["X_milo_graph"] = adata[adata.obs["nhood_ixs_refined"]==1].obsm[basis]
     ## Add nhood size
     adata.uns["nhood_adata"].obs["Nhood_size"] = np.array(adata.obsm["nhoods"].sum(0)).flatten()
     ## Add adjacency graph

@@ -7,6 +7,7 @@ from typing import Union, Optional, Sequence, Any, Mapping, List, Tuple
 from anndata import AnnData
 from scipy.sparse import csr_matrix
 import random
+import re
 
 ## rpy2 setup to run edgeR functions
 from rpy2.robjects.packages import importr
@@ -36,7 +37,16 @@ def make_nhoods(
     - seed: random seed for cell sampling (default: 42)
     '''
     ## Get reduced dim used for KNN graph
-    use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
+    if neighbors_key is None:
+        try:
+            use_rep = adata.uns["neighbors"]["params"]["use_rep"]
+        except KeyError:
+            print('Using X_pca as default embedding') 
+            use_rep = "X_pca"
+        knn_graph = adata.obsp["connectivities"]
+    else:
+        use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
+        knn_graph = adata.obsp[neighbors_key + "_connectivities"]
 
     ## Get reduced dim
     X_dimred = adata.obsm[use_rep]
@@ -44,7 +54,6 @@ def make_nhoods(
     ## Sample size
     n_ixs = int(np.round(adata.n_obs * prop))
 
-    knn_graph = adata.obsp[neighbors_key + "_connectivities"]
     ## Binarize
     knn_graph[knn_graph!=0] = 1
 
@@ -82,7 +91,9 @@ def make_nhoods(
     adata.obs["nhood_ixs_refined"] = adata.obs_names.isin(adata.obs_names[refined_vertices])
     adata.obs["nhood_ixs_refined"] = adata.obs["nhood_ixs_refined"].astype("int")
     adata.obs["nhood_ixs_random"] = adata.obs["nhood_ixs_random"].astype("int")
-
+    ## Store info on neighbor_key used
+    adata.uns["nhood_neighbors_key"] = neighbors_key
+    
 def count_nhoods(
     adata: AnnData, 
     sample_col: str, 
@@ -175,3 +186,47 @@ def test_nhoods(adata, design):
     ## Save outputs
     res.index = nhood_adata.obs_names
     nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
+    
+    ## Run Graph spatial FDR correction
+    _graph_spatialFDR(adata, neighbors_key = adata.uns["nhood_neighbors_key"])
+    
+def _graph_spatialFDR(adata, neighbors_key=None):
+    '''
+    FDR correction weighted on inverse of connectivity of neighbourhoods.
+    The distance to the k-th nearest neighbor is used as a measure of connectivity.
+    '''
+    ## Store distance to K-th nearest neighbor
+    if neighbors_key is None:
+        k = adata.uns["neighbors"]["params"]["n_neighbors"]
+        knn_dists = adata.obsp["distances"]
+    else:
+        k = adata.uns[neighbors_key]["params"]["n_neighbors"]
+        knn_dists = adata.obsp[neighbors_key + "_distances"]
+
+    nhood_ixs = adata.obs["nhood_ixs_refined"]==1
+    dist_mat = knn_dists[nhood_ixs,:]
+    k_distances = []
+    for i in range(dist_mat.shape[0]):
+        dist_mat[i,:]
+        dists = dist_mat[i,:].toarray()
+        dists.sort()
+        k_dist = dists.flatten()[-(k-1):][0]
+        k_distances.append(k_dist)
+    adata.uns["nhood_adata"].obs['kth_distance'] = k_distances
+
+    # use 1/connectivity as the weighting for the weighted BH adjustment from Cydar
+    w = 1/adata.uns["nhood_adata"].obs['kth_distance']
+    w[np.isinf(w)] = 0
+
+    ## Computing a density-weighted q-value.
+    pvalues = adata.uns["nhood_adata"].obs["PValue"]
+    o = pvalues.argsort()
+    pvalues = pvalues[o]
+    w = w[o]
+
+    adjp = np.zeros(shape=len(o))
+    adjp[o] = (sum(w)*pvalues/np.cumsum(w))[::-1].cummin()[::-1]
+    adjp = np.array([x if x < 1 else 1 for x in adjp])
+
+    ## Store in anndata
+    adata.uns["nhood_adata"].obs["SpatialFDR"] = adjp

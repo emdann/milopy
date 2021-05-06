@@ -15,5 +15,5 @@ setup(name='milopy',
           "scipy",
           "numpy",
           "matplotlib"
-      ]
+      ],
       zip_safe=False)

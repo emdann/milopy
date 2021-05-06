@@ -10,6 +10,7 @@ import seaborn as sns
 
 def plot_nhood_graph(
     adata, 
+    alpha=0.1,
     min_size=10, 
     **kwargs
     ):
@@ -17,18 +18,28 @@ def plot_nhood_graph(
     Visualize DA results on abstracted graph (wrapper around sc.pl.embedding)
     
     - adata: AnnData object
+    - alpha: significance threshold
     - min_size: minimum size of nodes in visualization (default: 10)
     - **kwargs: other arguments to pass to scanpy.pl.embedding
     '''
-    sc.pl.embedding(adata.uns["nhood_adata"], "X_milo_graph", 
-                    color="logFC", cmap="RdBu",
+    nhood_adata = adata.uns["nhood_adata"]
+    
+    vmax = np.max([nhood_adata.obs["logFC"].max(), abs(nhood_adata.obs["logFC"].min())])
+    vmin = - vmax
+
+    nhood_adata.obs["graph_color"] = nhood_adata.obs["logFC"]
+    nhood_adata.obs.loc[nhood_adata.obs["SpatialFDR"] > alpha, "graph_color"] = np.nan
+    nhood_adata.obs["graph_color"].max()
+
+    sc.pl.embedding(nhood_adata, "X_milo_graph", 
+                    color="graph_color", cmap="RdBu",
                     size=adata.uns["nhood_adata"].obs["Nhood_size"]*min_size, 
                     edges=True, neighbors_key="nhood",
                     # edge_width = 
                     frameon=False,
-                    **kwargs
+                    vmax=vmax, vmin=vmin,
+                    title="DA log-Fold Change"
                    )
-
     
 def plot_nhood(adata, ix, basis="X_umap"):    
     '''
