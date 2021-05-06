@@ -11,7 +11,7 @@ setup(name='milopy',
       install_requires=[
           "pandas",
           "anndata",
-          "scanpy",
+          "scanpy>=1.6.0",
           "scipy",
           "numpy",
           "matplotlib"
