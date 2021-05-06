@@ -2,4 +2,3 @@ scanpy
 pandas
 anndata
 numpy
-random
