@@ -2,8 +2,8 @@ import pytest
 import scanpy as sc
 import numpy as np
 import pandas as pd
-from ..milopy.core import make_nhoods
-from ..milopy.core import count_nhoods
+from milopy.core import make_nhoods
+from milopy.core import count_nhoods
        
 adata = sc.datasets.pbmc68k_reduced()
 make_nhoods(adata)
