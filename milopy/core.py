@@ -144,7 +144,13 @@ def test_nhoods(adata, design):
     
     ## Add covariates used for testing to nhood_adata.var
     sample_col = nhood_adata.uns["sample_col"]
-    nhoods_var = adata.obs[covariates + [sample_col]].drop_duplicates()
+    try:
+        nhoods_var = adata.obs[covariates + [sample_col]].drop_duplicates()
+    except KeyError:
+        missing_cov = [x for x in covariates if x not in nhood_adata.var.columns]
+        raise KeyError(
+            'Covariates {c} are not columns in adata.obs'.format(c=" ".join(missing_cov))
+        )
     nhoods_var = nhoods_var[covariates + [sample_col]].astype("str")
     try:
         assert nhoods_var.shape[0] == len(nhood_adata.var_names)

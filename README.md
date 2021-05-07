@@ -5,6 +5,11 @@ Basic python implementation of Milo for differential abundance testing on KNN gr
 
 ## Installation
 
+You need to manually install edgeR. In R:
+```r
+BiocManager::install("edgeR")
+```
+
 ```
 git clone https://github.com/emdann/milopy.git
 cd milopy

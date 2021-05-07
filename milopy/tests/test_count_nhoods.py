@@ -8,7 +8,6 @@ from milopy.core import count_nhoods
 adata = sc.datasets.pbmc68k_reduced()
 make_nhoods(adata)
     
-## Test that
 def test_sample_values():
     ## Extract cells of one nhood
     nh=1
