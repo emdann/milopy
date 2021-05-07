@@ -4,4 +4,3 @@ anndata
 numpy
 rpy2>=3.3.0
 scipy
-bioconductor-edgeR
