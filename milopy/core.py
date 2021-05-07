@@ -1,3 +1,4 @@
+import logging
 import scanpy as sc
 import pandas as pd
 import numpy as np
@@ -41,7 +42,7 @@ def make_nhoods(
         try:
             use_rep = adata.uns["neighbors"]["params"]["use_rep"]
         except KeyError:
-            print('Using X_pca as default embedding') 
+            logging.warning('Using X_pca as default embedding') 
             use_rep = "X_pca"
         knn_graph = adata.obsp["connectivities"]
     else:
@@ -155,7 +156,7 @@ def DA_nhoods(adata, design):
     try:
         assert nhoods_var.shape[0] == len(nhood_adata.var_names)
     except:
-        raise ValueError("The covariates are not univocaly assigned to each sample")
+        raise ValueError("Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")
     nhoods_var.index = nhoods_var[sample_col]
     nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
     ## Get design dataframe
@@ -240,8 +241,7 @@ def _graph_spatialFDR(adata, neighbors_key=None):
 def _try_import_bioc_library(name):
     try:
         _r_lib = importr(name)
-        _r_lib_name = name
-        return _r_lib, _r_lib_name
+        return _r_lib
     except PackageNotInstalledError:
         raise RuntimeError(
             f"Install Bioconductor library `{name!r}` first as `BiocManager::install({name!r}).`"

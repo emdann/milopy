@@ -24,13 +24,7 @@ def anndata():
     count_nhoods(adata, sample_col="sample")
     return adata
 
-# def broken_test_nhoods(adata_simulation):
-#     return(test_nhoods(adata_simulation, design="~ciaone"))
-
 def test_missing_covariate(anndata):
     adata = anndata.copy() 
     with pytest.raises(KeyError):
         DA_nhoods(adata, design="~ciaone")
-
-# def test_afunction_throws_exception(self):
-#     self.assertRaises(KeyError, test_nhoods, adata, "~ciaone")
