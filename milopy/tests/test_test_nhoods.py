@@ -24,5 +24,3 @@ count_nhoods(adata, sample_col="sample")
 def test_missing_covariate():
     with pytest.raises(KeyError):
         test_nhoods(adata, design="~ciaone")
-
-

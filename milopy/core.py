@@ -10,7 +10,7 @@ import random
 import re
 
 ## rpy2 setup to run edgeR functions
-from rpy2.robjects.packages import importr
+from rpy2.robjects.packages import PackageNotInstalledError,importr
 import rpy2.robjects.numpy2ri
 from rpy2.robjects import pandas2ri
 import rpy2.robjects as ro
@@ -135,7 +135,7 @@ def test_nhoods(adata, design):
     ## Set up rpy2 to run edgeR
     rpy2.robjects.numpy2ri.activate()
     rpy2.robjects.pandas2ri.activate()
-    edgeR = importr("edgeR")
+    edgeR = _try_import_bioc_library("edgeR")
     stats = importr("stats")
     base = importr("base")
     
@@ -236,3 +236,13 @@ def _graph_spatialFDR(adata, neighbors_key=None):
 
     ## Store in anndata
     adata.uns["nhood_adata"].obs["SpatialFDR"] = adjp
+    
+def _try_import_bioc_library(name):
+    try:
+        _r_lib = importr(name)
+        _r_lib_name = name
+        return _r_lib, _r_lib_name
+    except PackageNotInstalledError:
+        raise RuntimeError(
+            f"Install Bioconductor library `{name!r}` first as `BiocManager::install({name!r}).`"
+        )
