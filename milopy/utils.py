@@ -67,3 +67,36 @@ def build_nhood_graph(adata, basis="X_umap"):
     adata.uns["nhood_adata"].obsp["nhood_connectivities"] = adata.obsm["nhoods"].T.dot(adata.obsm["nhoods"])
     adata.uns["nhood_adata"].uns["nhood"] = {"connectivities_key":"nhood_connectivities", "distances_key":""}
 
+## -- UTILS --- ##
+def add_covariate_to_nhoods_var(adata, new_covariates):
+    '''
+    Add covariate from adata.obs to adata.uns["nhood_adata"].var
+    '''
+    ## Add covariates used for testing to nhood_adata.var
+    nhood_adata = adata.uns["nhood_adata"].copy()
+    sample_col = nhood_adata.uns["sample_col"]
+    covariates = list(set(nhood_adata.var.columns[nhood_adata.var.columns!=sample_col].tolist() + new_covariates))
+    try:
+        nhoods_var = adata.obs[covariates + [sample_col]].drop_duplicates()
+    except KeyError:
+        missing_cov = [x for x in covariates if x not in nhood_adata.var.columns]
+        raise KeyError(
+            'Covariates {c} are not columns in adata.obs'.format(c=" ".join(missing_cov))
+        )
+    nhoods_var = nhoods_var[covariates + [sample_col]].astype("str")
+    try:
+        assert nhoods_var.shape[0] == len(nhood_adata.var_names)
+    except:
+        raise ValueError("Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")
+    nhoods_var.index = nhoods_var[sample_col]
+    nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
+    adata.uns["nhood_adata"] = nhood_adata
+    
+## -- CHECKS -- ##
+
+def _check_milo_anndata(adata):
+    '''
+    Checks that anndata object contains the required slots
+    '''
+    has_nhoods = 'nhoods' in adata.obsm.keys()
+    has_nhood_adata = 'nhood_adata' in adata.uns.keys()

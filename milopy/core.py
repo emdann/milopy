@@ -44,10 +44,10 @@ def make_nhoods(
         except KeyError:
             logging.warning('Using X_pca as default embedding') 
             use_rep = "X_pca"
-        knn_graph = adata.obsp["connectivities"]
+        knn_graph = adata.obsp["connectivities"].copy()
     else:
         use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
-        knn_graph = adata.obsp[neighbors_key + "_connectivities"]
+        knn_graph = adata.obsp[neighbors_key + "_connectivities"].copy()
 
     ## Get reduced dim
     X_dimred = adata.obsm[use_rep]
@@ -192,6 +192,12 @@ def DA_nhoods(adata, design):
     
     ## Save outputs
     res.index = nhood_adata.obs_names
+#     nhood_adata.obs["logFC"] = res["logFC"]
+#     nhood_adata.obs["F"] = res["F"]
+#     nhood_adata.obs["PValue"] = res["PValue"]
+    # overwrite old results
+    if any([x in nhood_adata.obs.columns for x in res.columns]):
+        nhood_adata.obs = nhood_adata.obs.drop(res.columns, axis=1)
     nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
     
     ## Run Graph spatial FDR correction
@@ -212,13 +218,14 @@ def _graph_spatialFDR(adata, neighbors_key=None):
 
     nhood_ixs = adata.obs["nhood_ixs_refined"]==1
     dist_mat = knn_dists[nhood_ixs,:]
-    k_distances = []
-    for i in range(dist_mat.shape[0]):
-        dist_mat[i,:]
-        dists = dist_mat[i,:].toarray()
-        dists.sort()
-        k_dist = dists.flatten()[-(k-1):][0]
-        k_distances.append(k_dist)
+    k_distances = dist_mat.max(1).toarray().ravel()
+#     k_distances = []
+#     for i in range(dist_mat.shape[0]):
+#         dist_mat[i,:]
+#         dists = dist_mat[i,:].toarray()
+#         dists.sort()
+#         k_dist = dists.flatten()[-(k-1):][0]
+#         k_distances.append(k_dist)
     adata.uns["nhood_adata"].obs['kth_distance'] = k_distances
 
     # use 1/connectivity as the weighting for the weighted BH adjustment from Cydar
@@ -237,6 +244,8 @@ def _graph_spatialFDR(adata, neighbors_key=None):
 
     ## Store in anndata
     adata.uns["nhood_adata"].obs["SpatialFDR"] = adjp
+
+## -- UTILS -- ##
     
 def _try_import_bioc_library(name):
     try:
