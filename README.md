@@ -60,7 +60,7 @@ milo.make_nhoods(adata)
 milo.count_nhoods(adata, sample_col="sample")
 
 ## Test for differential abundance between conditions
-milo.test_nhoods(adata, design="~ condition")
+milo.DA_nhoods(adata, design="~ condition")
 
 ## Check results
 milo_results = adata.uns["nhood_adata"].obs

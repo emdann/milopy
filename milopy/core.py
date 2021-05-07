@@ -126,7 +126,7 @@ def count_nhoods(
     nhood_adata.uns["sample_col"] = sample_col
     adata.uns["nhood_adata"] = nhood_adata
     
-def test_nhoods(adata, design):
+def DA_nhoods(adata, design):
     '''
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
     - adata
