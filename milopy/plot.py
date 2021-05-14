@@ -34,6 +34,11 @@ def plot_nhood_graph(
     nhood_adata.obs.loc[nhood_adata.obs["SpatialFDR"] > alpha, "graph_color"] = np.nan
     nhood_adata.obs["abs_logFC"] = abs(nhood_adata.obs["logFC"])
     nhood_adata.obs.loc[nhood_adata.obs["abs_logFC"] < min_logFC, "graph_color"] = np.nan
+    
+    ## Plotting order - extreme logFC on top
+    nhood_adata.obs.loc[nhood_adata.obs["graph_color"].isna(), "abs_logFC"] = np.nan
+    ordered = nhood_adata.obs.sort_values('abs_logFC', na_position='first').index
+    nhood_adata = nhood_adata[ordered]
 
     vmax = np.max([nhood_adata.obs["graph_color"].max(), abs(nhood_adata.obs["graph_color"].min())])
     vmin = - vmax
@@ -43,6 +48,7 @@ def plot_nhood_graph(
                     size=adata.uns["nhood_adata"].obs["Nhood_size"]*min_size, 
                     edges=plot_edges, neighbors_key="nhood",
                     # edge_width = 
+                    sort_order=False,
                     frameon=False,
                     vmax=vmax, vmin=vmin,
                     title=title,
@@ -55,3 +61,5 @@ def plot_nhood(adata, ix, basis="X_umap"):
     '''
     adata.obs["Nhood"] = adata.obsm["nhoods"][:,ix].toarray().ravel()
     sc.pl.embedding(adata, basis, color="Nhood", size=30, title="Nhood" + str(ix))
+    
+### Plot nhood beeswarm

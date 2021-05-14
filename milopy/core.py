@@ -127,7 +127,7 @@ def count_nhoods(
     nhood_adata.uns["sample_col"] = sample_col
     adata.uns["nhood_adata"] = nhood_adata
     
-def DA_nhoods(adata, design):
+def DA_nhoods(adata, design, subset_samples=None):
     '''
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
     - adata
@@ -152,7 +152,8 @@ def DA_nhoods(adata, design):
         raise KeyError(
             'Covariates {c} are not columns in adata.obs'.format(c=" ".join(missing_cov))
         )
-    nhoods_var = nhoods_var[covariates + [sample_col]].astype("str")
+    ## N.B. This might need some type adjustment!!
+    nhoods_var = nhoods_var[covariates + [sample_col]]
     try:
         assert nhoods_var.shape[0] == len(nhood_adata.var_names)
     except:
@@ -173,17 +174,25 @@ def DA_nhoods(adata, design):
     count_mat = nhood_adata.X.toarray()
     lib_size = count_mat.sum(0)
 
-    ## Filter out zeros 
+    ## Filter out samples with zero counts 
     keep_smp = lib_size > 0
+    
+    ## Subset samples
+    if subset_samples is not None:
+        keep_smp = keep_smp & nhood_adata.var_names.isin(subset_samples)
 
+    ## Filter out nhoods with zero counts 
+    ## (they can appear after sample filtering)
+    keep_nhoods = count_mat[:,keep_smp].sum(1) > 0
+    
     ## Define model matrix
-    model = stats.model_matrix(object=stats.formula(design), data=design_df)
+    model = stats.model_matrix(object=stats.formula(design), data=design_df[keep_smp])
 
     ## Fit NB-GLM
-    dge = edgeR.DGEList(counts=count_mat[:,keep_smp], lib_size=lib_size[keep_smp])
+    dge = edgeR.DGEList(counts=count_mat[keep_nhoods,:][:,keep_smp], lib_size=lib_size[keep_smp])
     dge = edgeR.calcNormFactors(dge, method="TMM")
-    dge = edgeR.estimateDisp(dge, model[keep_smp,:])
-    fit = edgeR.glmQLFit(dge, model[keep_smp,:], robust=True)
+    dge = edgeR.estimateDisp(dge, model)
+    fit = edgeR.glmQLFit(dge, model, robust=True)
 
     ## Test
     n_coef = model.shape[1]
@@ -191,7 +200,7 @@ def DA_nhoods(adata, design):
     res = pd.DataFrame(res)
     
     ## Save outputs
-    res.index = nhood_adata.obs_names
+    res.index = nhood_adata.obs_names[keep_nhoods]
 #     nhood_adata.obs["logFC"] = res["logFC"]
 #     nhood_adata.obs["F"] = res["F"]
 #     nhood_adata.obs["PValue"] = res["PValue"]
