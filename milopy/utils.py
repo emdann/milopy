@@ -73,7 +73,14 @@ def add_covariate_to_nhoods_var(adata, new_covariates):
     Add covariate from adata.obs to adata.uns["nhood_adata"].var
     '''
     ## Add covariates used for testing to nhood_adata.var
-    nhood_adata = adata.uns["nhood_adata"].copy()
+    try:
+        nhood_adata = adata.uns["nhood_adata"].copy()
+    except KeyError:
+        raise KeyError(
+                'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+            )
+
+    
     sample_col = nhood_adata.uns["sample_col"]
     covariates = list(set(nhood_adata.var.columns[nhood_adata.var.columns!=sample_col].tolist() + new_covariates))
     try:
@@ -91,6 +98,40 @@ def add_covariate_to_nhoods_var(adata, new_covariates):
     nhoods_var.index = nhoods_var[sample_col]
     nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
     adata.uns["nhood_adata"] = nhood_adata
+    
+    
+def annotate_nhoods(adata, anno_col):
+    '''
+    Assigns a categorical label to neighbourhoods, based on the most frequent label
+    among cells in each neighbourhood. This can be useful to stratify DA testing
+    results by cell types or samples.
+    
+    Params:
+    -------
+    - adata: AnnData object with adata.uns["nhood_adata"]
+    - anno_col: string indicating column in adata.obs containing the cell annotations to use for nhood labelling
+    
+    Returns:
+    --------
+    None. Adds in place:
+    - `adata.uns["nhood_adata"].obs["nhood_annotation"]`: assigning a label to each nhood
+    - `adata.uns["nhood_adata"].obs["nhood_annotation_frac"]` stores the fraciton of cells in the neighbourhood with the assigned label
+    - `adata.uns["nhood_adata"].obsm['frac_annotation']`: stores the fraction of cells from each label in each nhood
+    - `adata.uns["nhood_adata"].uns["annotation_labels"]`: stores the column names for `adata.uns["nhood_adata"].obsm['frac_annotation']`
+    '''
+    anno_dummies = pd.get_dummies(adata.obs[anno_col])
+    anno_count = adata.obsm["nhoods"].T.dot(scipy.sparse.csr_matrix(anno_dummies.values))
+    anno_frac = np.array(anno_count/anno_count.sum(1))
+
+    anno_frac = pd.DataFrame(anno_frac, 
+                             columns=anno_dummies.columns,
+                             index=adata.uns["nhood_adata"].obs_names
+                            )
+    adata.uns["nhood_adata"].obsm["frac_annotation"] = anno_frac.values
+    adata.uns["nhood_adata"].uns["annotation_labels"] = anno_frac.columns
+    adata.uns["nhood_adata"].obs["nhood_annotation"] = anno_frac.idxmax(1)
+    adata.uns["nhood_adata"].obs["nhood_annotation_frac"] = anno_frac.max(1)
+    
     
 ## -- CHECKS -- ##
 
