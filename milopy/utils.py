@@ -91,11 +91,11 @@ def add_covariate_to_nhoods_var(adata, new_covariates):
             'Covariates {c} are not columns in adata.obs'.format(c=" ".join(missing_cov))
         )
     nhoods_var = nhoods_var[covariates + [sample_col]].astype("str")
-    try:
-        assert nhoods_var.shape[0] == len(nhood_adata.var_names)
-    except:
-        raise ValueError("Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")
     nhoods_var.index = nhoods_var[sample_col]
+    try:
+        assert nhoods_var.loc[nhood_adata.var_names].shape[0] == len(nhood_adata.var_names)
+    except:
+        raise ValueError("Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")    
     nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
     adata.uns["nhood_adata"] = nhood_adata
     

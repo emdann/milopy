@@ -29,6 +29,10 @@ def test_missing_covariate(anndata):
     with pytest.raises(KeyError):
         DA_nhoods(adata, design="~ciaone")
 
+def test_non_unique_covariate(anndata):
+    adata = anndata.copy() 
+    with pytest.raises(ValueError):
+        DA_nhoods(adata, design="~phase")
         
 ## Check that results make sense
 def test_pvalues(anndata):

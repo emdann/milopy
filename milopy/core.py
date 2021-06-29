@@ -94,6 +94,20 @@ def make_nhoods(
     adata.obs["nhood_ixs_random"] = adata.obs["nhood_ixs_random"].astype("int")
     ## Store info on neighbor_key used
     adata.uns["nhood_neighbors_key"] = neighbors_key
+    ## Store distance to K-th nearest neighbor (used for spatial FDR correction)
+    if neighbors_key is None:
+        k = adata.uns["neighbors"]["params"]["n_neighbors"]
+        knn_dists = adata.obsp["distances"]
+    else:
+        k = adata.uns[neighbors_key]["params"]["n_neighbors"]
+        knn_dists = adata.obsp[neighbors_key + "_distances"]
+    nhood_ixs = adata.obs["nhood_ixs_refined"]==1
+    dist_mat = knn_dists[nhood_ixs,:]
+    k_distances = dist_mat.max(1).toarray().ravel()
+    adata.obs["nhood_kth_distance"] = 0
+    adata.obs.loc[adata.obs["nhood_ixs_refined"]==1, "nhood_kth_distance"] = k_distances
+    
+
     
 def count_nhoods(
     adata: AnnData, 
@@ -125,6 +139,9 @@ def count_nhoods(
     nhood_var = pd.DataFrame(index=all_samples)
     nhood_adata = anndata.AnnData(X=nhood_count_mat, var=nhood_var)
     nhood_adata.uns["sample_col"] = sample_col
+    ## Save nhood index info
+    nhood_adata.obs["index_cell"] = adata.obs_names[adata.obs["nhood_ixs_refined"]==1]
+    nhood_adata.obs["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]==1, "nhood_kth_distance"]
     adata.uns["nhood_adata"] = nhood_adata
     
 def DA_nhoods(adata, design, subset_samples=None):
@@ -132,6 +149,7 @@ def DA_nhoods(adata, design, subset_samples=None):
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
     - adata
     - design: formula (terms should be columns in adata.uns["nhood_adata"].var)
+    - subset_samples: subset of samples (columns in `adata.uns["nhood_adata"].X`) to use for the test
     '''
     ## Set up rpy2 to run edgeR
     rpy2.robjects.numpy2ri.activate()
@@ -141,7 +159,7 @@ def DA_nhoods(adata, design, subset_samples=None):
     base = importr("base")
     
     nhood_adata = adata.uns["nhood_adata"]
-    covariates = list(set(re.split(' \\+ |\\*', design.lstrip("~ "))))
+    covariates = [x.strip(" ") for x in set(re.split('\\+|\\*', design.lstrip("~ ")))]
     
     ## Add covariates used for testing to nhood_adata.var
     sample_col = nhood_adata.uns["sample_col"]
@@ -154,11 +172,12 @@ def DA_nhoods(adata, design, subset_samples=None):
         )
     ## N.B. This might need some type adjustment!!
     nhoods_var = nhoods_var[covariates + [sample_col]]
+    nhoods_var.index = nhoods_var[sample_col]
+    
     try:
-        assert nhoods_var.shape[0] == len(nhood_adata.var_names)
+        assert nhoods_var.loc[nhood_adata.var_names].shape[0] == len(nhood_adata.var_names)
     except:
         raise ValueError("Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")
-    nhoods_var.index = nhoods_var[sample_col]
     nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
     ## Get design dataframe
     try:
@@ -168,7 +187,6 @@ def DA_nhoods(adata, design, subset_samples=None):
         raise KeyError(
             'Covariates {c} are not columns in adata.uns["nhood_adata"].var'.format(c=" ".join(missing_cov))
         )
-        
     
     ## Get count matrix
     count_mat = nhood_adata.X.toarray()
@@ -180,7 +198,7 @@ def DA_nhoods(adata, design, subset_samples=None):
     ## Subset samples
     if subset_samples is not None:
         keep_smp = keep_smp & nhood_adata.var_names.isin(subset_samples)
-
+    
     ## Filter out nhoods with zero counts 
     ## (they can appear after sample filtering)
     keep_nhoods = count_mat[:,keep_smp].sum(1) > 0
@@ -217,25 +235,6 @@ def _graph_spatialFDR(adata, neighbors_key=None):
     FDR correction weighted on inverse of connectivity of neighbourhoods.
     The distance to the k-th nearest neighbor is used as a measure of connectivity.
     '''
-    ## Store distance to K-th nearest neighbor
-    if neighbors_key is None:
-        k = adata.uns["neighbors"]["params"]["n_neighbors"]
-        knn_dists = adata.obsp["distances"]
-    else:
-        k = adata.uns[neighbors_key]["params"]["n_neighbors"]
-        knn_dists = adata.obsp[neighbors_key + "_distances"]
-
-    nhood_ixs = adata.obs["nhood_ixs_refined"]==1
-    dist_mat = knn_dists[nhood_ixs,:]
-    k_distances = dist_mat.max(1).toarray().ravel()
-#     k_distances = []
-#     for i in range(dist_mat.shape[0]):
-#         dist_mat[i,:]
-#         dists = dist_mat[i,:].toarray()
-#         dists.sort()
-#         k_dist = dists.flatten()[-(k-1):][0]
-#         k_distances.append(k_dist)
-    adata.uns["nhood_adata"].obs['kth_distance'] = k_distances
 
     # use 1/connectivity as the weighting for the weighted BH adjustment from Cydar
     w = 1/adata.uns["nhood_adata"].obs['kth_distance']
