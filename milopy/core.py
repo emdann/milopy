@@ -242,16 +242,18 @@ def _graph_spatialFDR(adata, neighbors_key=None):
 
     ## Computing a density-weighted q-value.
     pvalues = adata.uns["nhood_adata"].obs["PValue"]
-    o = pvalues.argsort()
-    pvalues = pvalues[o]
-    w = w[o]
+    keep_nhoods = ~pvalues.isna() ## Filtering in case of test on subset of nhoods
+    o = pvalues[keep_nhoods].argsort()
+    pvalues = pvalues[keep_nhoods][o]
+    w = w[keep_nhoods][o]
 
     adjp = np.zeros(shape=len(o))
     adjp[o] = (sum(w)*pvalues/np.cumsum(w))[::-1].cummin()[::-1]
     adjp = np.array([x if x < 1 else 1 for x in adjp])
 
     ## Store in anndata
-    adata.uns["nhood_adata"].obs["SpatialFDR"] = adjp
+    adata.uns["nhood_adata"].obs["SpatialFDR"] = np.nan
+    adata.uns["nhood_adata"].obs.loc[keep_nhoods, "SpatialFDR"] = adjp
 
 ## -- UTILS -- ##
     
