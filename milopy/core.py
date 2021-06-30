@@ -141,7 +141,7 @@ def count_nhoods(
     nhood_adata.uns["sample_col"] = sample_col
     ## Save nhood index info
     nhood_adata.obs["index_cell"] = adata.obs_names[adata.obs["nhood_ixs_refined"]==1]
-    nhood_adata.obs["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]==1, "nhood_kth_distance"]
+    nhood_adata.obs["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]==1, "nhood_kth_distance"].values
     adata.uns["nhood_adata"] = nhood_adata
     
 def DA_nhoods(adata, design, subset_samples=None):
