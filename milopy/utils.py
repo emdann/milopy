@@ -36,7 +36,7 @@ def add_nhood_expression(
 
     ## Get gene expression matrix
     if layer is None:
-        X = adata.X.value
+        X = adata.X
         expr_id = "expr" 
     else:
         X = adata.layers[layer]
