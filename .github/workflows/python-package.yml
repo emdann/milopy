@@ -32,7 +32,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install R package dependencies
       run: |
-        Rscript --vanilla -e "install.packages(c('BiocManager', "statmod"), repos='http://cran.us.r-project.org'); library('BiocManager'); BiocManager::install('edgeR')"
+        Rscript --vanilla -e "install.packages(c('BiocManager', 'statmod'), repos='http://cran.us.r-project.org'); library('BiocManager'); BiocManager::install('edgeR')"
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
