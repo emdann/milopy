@@ -14,6 +14,7 @@ setup(name='milopy',
           "scanpy>=1.6.0",
           "scipy",
           "numpy",
-          "matplotlib"
+          "matplotlib",
+          "rpy2 >= 3.3.5"
       ],
       zip_safe=False)
