@@ -21,7 +21,7 @@ pip install .
 
 ## Tutorial
 
-* [Guided example on mouse gastrulation data]()
+* [Guided example on mouse gastrulation data](https://nbviewer.jupyter.org/github/emdann/milopy/blob/master/notebooks/milopy_example.ipynb)
 
 
 
