@@ -16,6 +16,7 @@ import rpy2.robjects.numpy2ri
 from rpy2.robjects import pandas2ri
 import rpy2.robjects as ro
 from rpy2.robjects.conversion import localconverter
+from rpy2.robjects.packages import STAP
 
 def make_nhoods(
     adata: AnnData, 
@@ -44,7 +45,12 @@ def make_nhoods(
         except KeyError:
             logging.warning('Using X_pca as default embedding') 
             use_rep = "X_pca"
-        knn_graph = adata.obsp["connectivities"].copy()
+        try:
+            knn_graph = adata.obsp["connectivities"].copy()
+        except KeyError:
+            raise KeyError(
+                'No "connectivities" slot in adata.obsp -- please run scanpy.pp.neighbors(adata) first'
+            )
     else:
         use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
         knn_graph = adata.obsp[neighbors_key + "_connectivities"].copy()
@@ -144,17 +150,19 @@ def count_nhoods(
     nhood_adata.obs["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]==1, "nhood_kth_distance"].values
     adata.uns["nhood_adata"] = nhood_adata
     
-def DA_nhoods(adata, design, subset_samples=None):
+def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
     '''
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
     - adata
     - design: formula (terms should be columns in adata.uns["nhood_adata"].var)
+    - model_contrasts: A string vector that defines the contrasts used to perform DA testing
     - subset_samples: subset of samples (columns in `adata.uns["nhood_adata"].X`) to use for the test
     '''
     ## Set up rpy2 to run edgeR
     rpy2.robjects.numpy2ri.activate()
     rpy2.robjects.pandas2ri.activate()
     edgeR = _try_import_bioc_library("edgeR")
+    limma = _try_import_bioc_library("limma")
     stats = importr("stats")
     base = importr("base")
     
@@ -172,7 +180,7 @@ def DA_nhoods(adata, design, subset_samples=None):
         )
     ## N.B. This might need some type adjustment!!
     nhoods_var = nhoods_var[covariates + [sample_col]]
-    nhoods_var.index = nhoods_var[sample_col]
+    nhoods_var.index = nhoods_var[sample_col].astype("str")
     
     try:
         assert nhoods_var.loc[nhood_adata.var_names].shape[0] == len(nhood_adata.var_names)
@@ -214,7 +222,21 @@ def DA_nhoods(adata, design, subset_samples=None):
 
     ## Test
     n_coef = model.shape[1]
-    res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(fit, coef=n_coef), sort_by='none', n=np.inf))
+    if model_contrasts is not None:
+        r_str = '''
+        get_model_cols <- function(design_df, design){
+            m = model.matrix(object=formula(design), data=design_df)
+            return(colnames(m))
+        }
+        '''
+        get_model_cols = STAP(r_str, "get_model_cols")
+        model_mat_cols = get_model_cols.get_model_cols(design_df, design)
+        model_df = pd.DataFrame(model)
+        model_df.columns = model_mat_cols
+        mod_contrast = limma.makeContrasts(contrasts=model_contrasts, levels=model_df)
+        res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(fit, contrast=mod_contrast), sort_by='none', n=np.inf))
+    else:
+        res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(fit, coef=n_coef), sort_by='none', n=np.inf))
     res = pd.DataFrame(res)
     
     ## Save outputs
