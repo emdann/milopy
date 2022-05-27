@@ -8,11 +8,12 @@ from milopy.core import DA_nhoods
 
 
 @pytest.fixture
-def anndata():
+def anndata(seed=42):
     adata = sc.datasets.pbmc68k_reduced()
     make_nhoods(adata)
 
     ## Simulate experimental condition ##
+    np.random.seed(seed)
     adata.obs["condition"] = np.random.choice(["ConditionA", "ConditionB"], size=adata.n_obs, p=[0.5,0.5])
     # we simulate differential abundance in NK cells
     DA_cells = adata.obs["louvain"] == "1"
@@ -46,4 +47,4 @@ def test_fdr(anndata):
     adata = anndata.copy() 
     DA_nhoods(adata, design="~condition")
     nhood_adata = adata.uns["nhood_adata"]
-    assert np.all(nhood_adata.obs["PValue"] <= nhood_adata.obs["SpatialFDR"] ), "FDR is higher than uncorrected P-values"
+    assert np.all(np.round(nhood_adata.obs["PValue"], 10) <= np.round(nhood_adata.obs["SpatialFDR"], 10)), "FDR is higher than uncorrected P-values"
