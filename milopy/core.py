@@ -237,14 +237,10 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
         res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(fit, contrast=mod_contrast), sort_by='none', n=np.inf))
     else:
         res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(fit, coef=n_coef), sort_by='none', n=np.inf))
-    res = pd.DataFrame(res)
+    res = rpy2.robjects.conversion.rpy2py(res)
     
     ## Save outputs
     res.index = nhood_adata.obs_names[keep_nhoods]
-#     nhood_adata.obs["logFC"] = res["logFC"]
-#     nhood_adata.obs["F"] = res["F"]
-#     nhood_adata.obs["PValue"] = res["PValue"]
-    # overwrite old results
     if any([x in nhood_adata.obs.columns for x in res.columns]):
         nhood_adata.obs = nhood_adata.obs.drop(res.columns, axis=1)
     nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
