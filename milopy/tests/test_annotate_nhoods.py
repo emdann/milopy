@@ -37,7 +37,7 @@ def prep_nhood_matrix(seed):
 
 
 def test_nhood_mean_range():
-    adata = anndata.copy()
+    adata = anndata()
     annotate_nhoods_continuous(adata, anno_col='S_score')
     assert adata.uns['nhood_adata'].obs['nhood_S_score'].max(
     ) < adata.obs['S_score'].max()
@@ -48,7 +48,7 @@ def test_nhood_mean_range():
 
 
 def test_nhood_mean_range():
-    adata = anndata.copy()
+    adata = anndata()
     annotate_nhoods_continuous(adata, anno_col='S_score')
     i = np.random.choice(np.arange(adata.uns['nhood_adata'].n_obs))
     mean_val_nhood = adata.obs[adata.obsm['nhoods']
@@ -63,7 +63,7 @@ def test_nhood_mean_range():
 
 
 def test_nhood_annotation_frac_range():
-    adata = anndata.copy()
+    adata = anndata()
     annotate_nhoods(adata, anno_col='louvain')
     assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].max() <= 1.0
     assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].min() >= 0.0
@@ -72,6 +72,6 @@ def test_nhood_annotation_frac_range():
 
 
 def test_nhood_annotation_cont_gives_error():
-    adata = anndata.copy()
+    adata = anndata()
     with pytest.raises(ValueError):
         annotate_nhoods(adata, anno_col='S_score')
