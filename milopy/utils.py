@@ -32,7 +32,7 @@ def add_nhood_expression(
         nhood_adata = adata.uns["nhood_adata"]
     except KeyError:
         raise KeyError(
-            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.count_nhoods(adata)'
         )
 
     # Get gene expression matrix
@@ -51,7 +51,8 @@ def add_nhood_expression(
 
 ## -- NHOOD GRAPH -- ##
 
-def build_nhood_graph(adata, basis="X_umap"):
+def build_nhood_graph(adata: AnnData,
+                      basis: str = "X_umap"):
     '''
     Build graph of neighbourhoods used for visualization of DA results
 
@@ -74,16 +75,17 @@ def build_nhood_graph(adata, basis="X_umap"):
 ## -- UTILS --- ##
 
 
-def add_covariate_to_nhoods_var(adata, new_covariates):
+def add_covariate_to_nhoods_var(
+        adata: AnnData,
+        new_covariates: List[str]):
     '''
     Add covariate from adata.obs to adata.uns["nhood_adata"].var
     '''
-    # Add covariates used for testing to nhood_adata.var
     try:
         nhood_adata = adata.uns["nhood_adata"].copy()
     except KeyError:
         raise KeyError(
-            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.count_nhoods(adata)'
         )
 
     sample_col = nhood_adata.uns["sample_col"]
@@ -110,7 +112,8 @@ def add_covariate_to_nhoods_var(adata, new_covariates):
     adata.uns["nhood_adata"] = nhood_adata
 
 
-def annotate_nhoods(adata, anno_col):
+def annotate_nhoods(adata: AnnData,
+                    anno_col: str):
     '''
     Assigns a categorical label to neighbourhoods, based on the most frequent label
     among cells in each neighbourhood. This can be useful to stratify DA testing
@@ -129,6 +132,18 @@ def annotate_nhoods(adata, anno_col):
     - `adata.uns["nhood_adata"].obsm['frac_annotation']`: stores the fraction of cells from each label in each nhood
     - `adata.uns["nhood_adata"].uns["annotation_labels"]`: stores the column names for `adata.uns["nhood_adata"].obsm['frac_annotation']`
     '''
+    try:
+        nhood_adata = adata.uns["nhood_adata"]
+    except KeyError:
+        raise KeyError(
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+        )
+
+    # Check value is not numeric
+    if pd.api.types.is_numeric_dtype(adata.obs[anno_col]):
+        raise ValueError(
+            'adata.obs[anno_col] is not of categorical type - please use milopy.utils.annotate_nhoods_continuous for continuous variables')
+
     anno_dummies = pd.get_dummies(adata.obs[anno_col])
     anno_count = adata.obsm["nhoods"].T.dot(
         scipy.sparse.csr_matrix(anno_dummies.values))
@@ -144,7 +159,9 @@ def annotate_nhoods(adata, anno_col):
     adata.uns["nhood_adata"].obs["nhood_annotation_frac"] = anno_frac.max(1)
 
 
-def annotate_nhoods_continuous(adata, anno_col):
+def annotate_nhoods_continuous(
+        adata: AnnData,
+        anno_col: str):
     '''
     Assigns a continuous value to neighbourhoods, based on mean cell level covariate stored in adata.obs. 
     This can be useful to correlate DA log-foldChanges with continuous covariates such as pseudotime, gene expression scores etc...
@@ -159,12 +176,24 @@ def annotate_nhoods_continuous(adata, anno_col):
     None. Adds in place:
     - `adata.uns["nhood_adata"].obs["nhood_{anno_col}"]`: assigning a continuous value to each nhood
     '''
+    try:
+        nhood_adata = adata.uns["nhood_adata"]
+    except KeyError:
+        raise KeyError(
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.count_nhoods(adata)'
+        )
+
+    # Check value is not categorical
+    if not pd.api.types.is_numeric_dtype(adata.obs[anno_col]):
+        raise ValueError(
+            'adata.obs[anno_col] is not of continuous type - please use milopy.utils.annotate_nhoods for categorical variables')
+
     anno_val = adata.obsm["nhoods"].T.dot(
         scipy.sparse.csr_matrix(adata.obs[anno_col]).T)
 
     mean_anno_val = anno_val.toarray()/np.array(adata.obsm["nhoods"].T.sum(1))
 
-    adata.uns["nhood_adata"].obsm[f"nhood_{anno_col}"] = mean_anno_val.values
+    adata.uns["nhood_adata"].obs[f"nhood_{anno_col}"] = mean_anno_val
 
 
 ## -- CHECKS -- ##
