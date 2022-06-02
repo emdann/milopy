@@ -6,7 +6,7 @@ from milopy.utils import annotate_nhoods, annotate_nhoods_continuous
 
 
 @pytest.fixture
-def anndata(seed=42):
+def adata(seed=42):
     adata = prep_nhood_matrix(seed)
     return adata
 
@@ -36,8 +36,7 @@ def prep_nhood_matrix(seed):
 # Test that mean values are within the expected range
 
 
-def test_nhood_mean_range():
-    adata = anndata()
+def test_nhood_mean_range(adata):
     annotate_nhoods_continuous(adata, anno_col='S_score')
     assert adata.uns['nhood_adata'].obs['nhood_S_score'].max(
     ) < adata.obs['S_score'].max()
@@ -47,8 +46,7 @@ def test_nhood_mean_range():
 # Test that value corresponds to mean
 
 
-def test_nhood_mean_range():
-    adata = anndata()
+def test_nhood_mean_range(adata):
     annotate_nhoods_continuous(adata, anno_col='S_score')
     i = np.random.choice(np.arange(adata.uns['nhood_adata'].n_obs))
     mean_val_nhood = adata.obs[adata.obsm['nhoods']
@@ -62,8 +60,7 @@ def test_nhood_mean_range():
 # Test that label fractions are in the correct range
 
 
-def test_nhood_annotation_frac_range():
-    adata = anndata()
+def test_nhood_annotation_frac_range(adata):
     annotate_nhoods(adata, anno_col='louvain')
     assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].max() <= 1.0
     assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].min() >= 0.0
@@ -71,7 +68,6 @@ def test_nhood_annotation_frac_range():
 # Test continuous covariate gives error
 
 
-def test_nhood_annotation_cont_gives_error():
-    adata = anndata()
+def test_nhood_annotation_cont_gives_error(adata):
     with pytest.raises(ValueError):
         annotate_nhoods(adata, anno_col='S_score')
