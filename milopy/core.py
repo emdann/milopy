@@ -262,6 +262,8 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
         res = base.as_data_frame(edgeR.topTags(
             edgeR.glmQLFTest(fit, coef=n_coef), sort_by='none', n=np.inf))
     res = rpy2.robjects.conversion.rpy2py(res)
+    if not isinstance(res, pd.DataFrame):
+        res = pd.DataFrame(res)
 
     # Save outputs
     res.index = nhood_adata.obs_names[keep_nhoods]
