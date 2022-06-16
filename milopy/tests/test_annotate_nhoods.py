@@ -46,7 +46,7 @@ def test_nhood_mean_range(adata):
 # Test that value corresponds to mean
 
 
-def test_nhood_mean_range(adata):
+def test_correct_mean(adata):
     annotate_nhoods_continuous(adata, anno_col='S_score')
     i = np.random.choice(np.arange(adata.uns['nhood_adata'].n_obs))
     mean_val_nhood = adata.obs[adata.obsm['nhoods']
