@@ -196,11 +196,57 @@ def annotate_nhoods_continuous(
     adata.uns["nhood_adata"].obs[f"nhood_{anno_col}"] = mean_anno_val
 
 
-## -- CHECKS -- ##
+## -- I/O -- ##
+def write_milo_adata(adata: AnnData,
+                     filepath: str,
+                     **kwargs):
+    '''
+    Save anndata objects after Milo analysis
 
-def _check_milo_anndata(adata):
+    Params:
+    -----
+    - adata: AnnData object with adata.uns["nhood_adata"]
+    - filepath: path to h5ad file to save
+    - **kwargs: arguments passed to scanpy.write_h5ad 
+
+    Returns:
+    -------
+    None, saves 2 AnnData objects in h5ad format. The cell x gene AnnData is saved in filepath.
+    The nhood x sample AnnData is saved in a separate object (location is stored in adata.uns['nhood_adata_filepath'])
     '''
-    Checks that anndata object contains the required slots
+    nhood_filepath = filepath.split('.h5ad')[0] + ".nhood_adata.h5ad"
+    adata.uns['nhood_adata_filepath'] = nhood_filepath
+    try:
+        if 'annotation_labels' in adata.uns['nhood_adata'].uns.keys():
+            adata.uns['nhood_adata'].uns['annotation_labels'] = adata.uns['nhood_adata'].uns['annotation_labels'].tolist()
+    except KeyError:
+        raise KeyError(
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)')
+    nhood_adata = adata.uns["nhood_adata"].copy()
+    nhood_adata.write_h5ad(nhood_filepath, **kwargs)
+    del adata.uns["nhood_adata"]
+    adata.write_h5ad(filepath, **kwargs)
+
+
+def read_milo_adata(
+        filepath: str,
+        **kwargs) -> AnnData:
     '''
-    has_nhoods = 'nhoods' in adata.obsm.keys()
-    has_nhood_adata = 'nhood_adata' in adata.uns.keys()
+    Read AnnData objects stored after Milo analysis
+
+    Params:
+    ------
+    - filepath: path to h5ad file storing cell x gene AnnData object
+    - **kwargs: additional arguments passed to scanpy.read_h5ad
+
+    Returns:
+    -------
+    - AnnData object storing milo slots (adata.obsm['nhoods'], adata.uns['nhood_adata'])
+    '''
+    adata = sc.read_h5ad(filepath, **kwargs)
+    try:
+        nhood_filepath = adata.uns['nhood_adata_filepath']
+    except:
+        raise KeyError('No nhood_adata_file associated to adata')
+    adata.uns["nhood_adata"] = sc.read_h5ad(nhood_filepath, **kwargs)
+    return(adata)

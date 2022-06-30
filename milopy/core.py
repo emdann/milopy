@@ -223,7 +223,7 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
         keep_smp = keep_smp & nhood_adata.var_names.isin(subset_samples)
         design_df = design_df[keep_smp]
         for i, e in enumerate(design_df.columns):
-            if design_df.dtypes[i] == 'category':
+            if design_df.dtypes[i].name == 'category':
                 design_df[e] = design_df[e].cat.remove_unused_categories()
 
     # Filter out nhoods with zero counts
