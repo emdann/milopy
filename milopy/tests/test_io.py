@@ -34,4 +34,4 @@ def test_raise_error(anndata):
     adata = anndata.copy()
     del adata.uns['nhood_adata']
     with pytest.raises(KeyError):
-        write_milo_adata(adata)
+        write_milo_adata(adata, filepath='data/test.h5ad')
