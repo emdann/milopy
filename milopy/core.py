@@ -53,7 +53,11 @@ def make_nhoods(
                 'No "connectivities" slot in adata.obsp -- please run scanpy.pp.neighbors(adata) first'
             )
     else:
-        use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
+        try:
+            use_rep = adata.uns["neighbors"]["params"]["use_rep"]
+        except KeyError:
+            logging.warning('Using X_pca as default embedding')
+            use_rep = "X_pca"
         knn_graph = adata.obsp[neighbors_key + "_connectivities"].copy()
 
     # Get reduced dim
