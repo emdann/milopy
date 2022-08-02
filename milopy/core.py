@@ -1,3 +1,4 @@
+from audioop import add
 import logging
 import scanpy as sc
 import pandas as pd
@@ -162,13 +163,15 @@ def count_nhoods(
     adata.uns["nhood_adata"] = nhood_adata
 
 
-def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
+def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_intercept=True):
     '''
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
     - adata
     - design: formula (terms should be columns in adata.uns["nhood_adata"].var)
     - model_contrasts: A string vector that defines the contrasts used to perform DA testing
     - subset_samples: subset of samples (columns in `adata.uns["nhood_adata"].X`) to use for the test
+    - add_intercept: whether to include an intercept in the model. If False, this is equivalent to adding + 0 in the design formula.
+    When model_contrasts is specified, this is set to False by default. 
     '''
     # Set up rpy2 to run edgeR
     rpy2.robjects.numpy2ri.activate()
@@ -235,6 +238,8 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
     keep_nhoods = count_mat[:, keep_smp].sum(1) > 0
 
     # Define model matrix
+    if not add_intercept or model_contrasts is not None:
+        design = design + ' + 0'
     model = stats.model_matrix(object=stats.formula(
         design), data=design_df)
 
@@ -258,8 +263,12 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None):
         model_mat_cols = get_model_cols.get_model_cols(design_df, design)
         model_df = pd.DataFrame(model)
         model_df.columns = model_mat_cols
-        mod_contrast = limma.makeContrasts(
-            contrasts=model_contrasts, levels=model_df)
+        try:
+            mod_contrast = limma.makeContrasts(
+                contrasts=model_contrasts, levels=model_df)
+        except:
+            raise ValueError(
+                "Model contrasts must be in the form 'A-B' or 'A+B'")
         res = base.as_data_frame(edgeR.topTags(edgeR.glmQLFTest(
             fit, contrast=mod_contrast), sort_by='none', n=np.inf))
     else:
