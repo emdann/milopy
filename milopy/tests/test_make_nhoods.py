@@ -24,3 +24,15 @@ def test_nhood_sizes():
     knn_graph = adata_example.obsp["connectivities"]
     knn_graph[knn_graph != 0] = 1
     assert knn_graph.sum(0).min() <= adata_example.obsm["nhoods"].sum(0).min()
+
+## Test that the right KNN graph is used if specified ##
+
+
+def test_neighbors_key():
+    k = adata_example.uns['neighbors']['params']['n_neighbors']
+    test_k = 5
+    assert test_k < k
+    sc.pp.neighbors(adata_example, n_neighbors=test_k, key_added='test')
+    make_nhoods(adata_example, neighbors_key='test')
+    smallest_size = adata_example.obsm['nhoods'].toarray().sum(0).min()
+    assert smallest_size < k
