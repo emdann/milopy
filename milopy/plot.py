@@ -31,6 +31,12 @@ def plot_nhood_graph(
     '''
     nhood_adata = adata.uns["nhood_adata"].copy()
 
+    if "Nhood_size" not in nhood_adata.obs.columns:
+        raise KeyError(
+            'Cannot find "Nhood_size" column in adata.uns["nhood_adata"].obs -- \
+                please run milopy.utils.build_nhood_graph(adata)'
+        )
+
     nhood_adata.obs["graph_color"] = nhood_adata.obs["logFC"]
     nhood_adata.obs.loc[nhood_adata.obs["SpatialFDR"]
                         > alpha, "graph_color"] = np.nan
