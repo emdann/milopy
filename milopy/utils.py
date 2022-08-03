@@ -155,6 +155,7 @@ def annotate_nhoods(adata: AnnData,
                              )
     adata.uns["nhood_adata"].obsm["frac_annotation"] = anno_frac.values
     adata.uns["nhood_adata"].uns["annotation_labels"] = anno_frac.columns
+    adata.uns["nhood_adata"].uns["annotation_obs"] = anno_col
     adata.uns["nhood_adata"].obs["nhood_annotation"] = anno_frac.idxmax(1)
     adata.uns["nhood_adata"].obs["nhood_annotation_frac"] = anno_frac.max(1)
 

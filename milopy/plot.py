@@ -113,16 +113,31 @@ def plot_DA_beeswarm(
         median().\
         sort_values("logFC", ascending=True).index
 
-    anno_df = nhood_adata.obs[[anno_col, "logFC", "SpatialFDR"]]
+    anno_df = nhood_adata.obs[[anno_col, "logFC", "SpatialFDR"]].copy()
     anno_df['is_signif'] = anno_df['SpatialFDR'] < alpha
     # anno_df['across_organs'] = ["Significant across organs" if x else "" for x in (keep_nhoods & signif_nhoods)]
     anno_df = anno_df[anno_df[anno_col] != "nan"]
 
-    sns.violinplot(data=anno_df, y=anno_col, x="logFC", order=sorted_annos,
-                   size=190, cmap="Set1", inner=None, orient="h",
-                   linewidth=0,
-                   scale="width")
+    try:
+        anno_palette = _get_palette_adata(
+            adata, nhood_adata.uns['annotation_obs'])
+        sns.violinplot(data=anno_df, y=anno_col, x="logFC", order=sorted_annos,
+                       size=190, inner=None, orient="h",
+                       palette=anno_palette,
+                       linewidth=0,
+                       scale="width")
+    except:
+        sns.violinplot(data=anno_df, y=anno_col, x="logFC", order=sorted_annos,
+                       size=190, inner=None, orient="h",
+                       linewidth=0,
+                       scale="width")
     sns.stripplot(data=anno_df, y=anno_col, x="logFC", order=sorted_annos, size=2,
-                  color="black",
+                  hue='is_signif', palette=['grey', 'black'],
                   orient="h", alpha=0.5)
+    plt.legend(loc='upper left', title=f'< {int(alpha*100)}% SpatialFDR',
+               bbox_to_anchor=(1, 1), frameon=False)
     plt.axvline(x=0, ymin=0, ymax=1, color="black", linestyle="--")
+
+
+def _get_palette_adata(adata, obs_col):
+    return(dict(zip(adata.obs[obs_col].cat.categories, adata.uns[f'{obs_col}_colors'])))
