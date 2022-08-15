@@ -1,4 +1,8 @@
-Index
------------
+Welcome to milopy's documentation!
+=================================
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
 
-.. include:: ./index.md
+   readme
+   autoapi/index
