@@ -1,0 +1,42 @@
+:py:mod:`milopy.tests.test_annotate_nhoods`
+===========================================
+
+.. py:module:: milopy.tests.test_annotate_nhoods
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   milopy.tests.test_annotate_nhoods.adata
+   milopy.tests.test_annotate_nhoods.prep_nhood_matrix
+   milopy.tests.test_annotate_nhoods.test_nhood_mean_range
+   milopy.tests.test_annotate_nhoods.test_correct_mean
+   milopy.tests.test_annotate_nhoods.test_nhood_annotation_frac_range
+   milopy.tests.test_annotate_nhoods.test_nhood_annotation_cont_gives_error
+
+
+
+.. py:function:: adata(seed=42)
+
+
+.. py:function:: prep_nhood_matrix(seed)
+
+
+.. py:function:: test_nhood_mean_range(adata)
+
+
+.. py:function:: test_correct_mean(adata)
+
+
+.. py:function:: test_nhood_annotation_frac_range(adata)
+
+
+.. py:function:: test_nhood_annotation_cont_gives_error(adata)
+
+

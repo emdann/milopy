@@ -5,5 +5,5 @@ Welcome to milopy's documentation!
    :caption: Contents:
 
    readme
-   api
+   autoapi/index
    milopy_example

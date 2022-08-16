@@ -1,0 +1,24 @@
+:py:mod:`milopy.version`
+========================
+
+.. py:module:: milopy.version
+
+
+Module Contents
+---------------
+
+.. py:data:: __version__
+   :annotation: = 0.0.999
+
+   
+
+.. py:data:: __author__
+   :annotation: = Emma Dann
+
+   
+
+.. py:data:: __author_email__
+   :annotation: = ed6@sanger.ac.uk
+
+   
+
