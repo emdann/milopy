@@ -19,7 +19,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
-    "sphinx-apidoc"
 ]
 
 templates_path = ['_templates']
@@ -37,11 +36,15 @@ html_static_path = ['_static']
 
 # -- Exclude tests ----
 # This is the expected signature of the handler for this event, cf doc
+
+
 def autodoc_skip_member_handler(app, what, name, obj, skip, options):
     # Basic approach; you might want a regex instead
     return name.startswith("test_")
 
 # Automatically called by sphinx at startup
+
+
 def setup(app):
     # Connect the autodoc-skip-member event from apidoc to the callback
     app.connect('autodoc-skip-member', autodoc_skip_member_handler)
