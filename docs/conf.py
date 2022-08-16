@@ -19,11 +19,13 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
 ]
-autoapi_dirs = ["../milopy"]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# Generate the API documentation when building
+autosummary_generate = True
+autodoc_member_order = "bysource"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
