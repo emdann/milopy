@@ -1,0 +1,20 @@
+:py:mod:`milopy.tests`
+======================
+
+.. py:module:: milopy.tests
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   test_DA_nhoods/index.rst
+   test_annotate_nhoods/index.rst
+   test_count_nhoods/index.rst
+   test_io/index.rst
+   test_make_nhoods/index.rst
+   test_plot/index.rst
+
+

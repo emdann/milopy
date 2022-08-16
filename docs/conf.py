@@ -16,17 +16,18 @@ release = '0.0.999'
 
 extensions = [
     "myst_nb",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.autosummary",
+    # "sphinx.ext.viewcode",
+    # "sphinx.ext.autosummary",
+    'autoapi.extension'
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+autoapi_dirs = ['../milopy']
 
-# Generate the API documentation when building
-autosummary_generate = True
-autodoc_member_order = "bysource"
+# # Generate the API documentation when building
+# autosummary_generate = True
+# autodoc_member_order = "bysource"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
