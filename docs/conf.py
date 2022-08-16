@@ -16,7 +16,7 @@ release = '0.0.999'
 
 extensions = [
     "myst_nb",
-    "autoapi.extension",
+    "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
 ]
 autoapi_dirs = ["../milopy"]
