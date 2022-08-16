@@ -9,7 +9,7 @@
 project = 'milopy'
 copyright = '2022, Emma Dann'
 author = 'Emma Dann'
-release = '0.0.999'
+release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
