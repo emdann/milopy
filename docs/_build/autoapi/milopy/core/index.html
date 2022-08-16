@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>milopy.core &mdash; milopy 0.0.999 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="milopy.plot" href="../plot/index.html" />
+    <link rel="prev" title="milopy.tests.test_plot" href="../tests/test_plot/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> milopy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../plot/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.plot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../version/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.version</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../milopy_example.html">Differential abundance analysis in python with <code class="docutils literal notranslate"><span class="pre">milopy</span></code></a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">milopy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.core</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/milopy/core/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-milopy.core">
+<span id="milopy-core"></span><h1><a class="reference internal" href="#module-milopy.core" title="milopy.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.core</span></code></a><a class="headerlink" href="#module-milopy.core" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.core.make_nhoods" title="milopy.core.make_nhoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_nhoods</span></code></a>(adata[, neighbors_key, prop, seed])</p></td>
+<td><p>This function randomly samples vertcies on a graph to define neighbourhoods.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#milopy.core.count_nhoods" title="milopy.core.count_nhoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_nhoods</span></code></a>(adata, sample_col)</p></td>
+<td><p><ul class="simple">
+<li><p>adata</p></li>
+</ul>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.core.DA_nhoods" title="milopy.core.DA_nhoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DA_nhoods</span></code></a>(adata, design[, model_contrasts, ...])</p></td>
+<td><p>This will perform differential neighbourhood abundance testing (using edgeR under the hood)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#milopy.core._graph_spatialFDR" title="milopy.core._graph_spatialFDR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_graph_spatialFDR</span></code></a>(adata[, neighbors_key])</p></td>
+<td><p>FDR correction weighted on inverse of connectivity of neighbourhoods.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.core._try_import_bioc_library" title="milopy.core._try_import_bioc_library"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_try_import_bioc_library</span></code></a>(name)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="milopy.core.make_nhoods">
+<span class="sig-prename descclassname"><span class="pre">milopy.core.</span></span><span class="sig-name descname"><span class="pre">make_nhoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbors_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.core.make_nhoods" title="Permalink to this definition"></a></dt>
+<dd><p>This function randomly samples vertcies on a graph to define neighbourhoods.
+These are then refined by computing the median profile for the neighbourhood
+in reduced dimensional space and selecting the nearest vertex to this
+position. Thus, multiple neighbourhoods may be collapsed down together to
+prevent over-sampling the graph space.</p>
+<ul class="simple">
+<li><p>adata: AnnData object. Should contain a knn graph in <cite>adata.obsp</cite></p></li>
+<li><p>neighbors_key: string indicating the key in <cite>adata.obsp</cite> to use as KNN graph. If not specified,</p></li>
+</ul>
+<p><cite>make_nhoods</cite> looks .obsp[‘connectivities’] for connectivities (default storage places for
+<cite>scanpy.pp.neighbors</cite>). If specified, it looks .obsp[.uns[neighbors_key][‘connectivities_key’]] for
+connectivities.
+- prop: fraction of cells to sample for neighbourhood index search (default: 0.1)
+- seed: random seed for cell sampling (default: 42)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="milopy.core.count_nhoods">
+<span class="sig-prename descclassname"><span class="pre">milopy.core.</span></span><span class="sig-name descname"><span class="pre">count_nhoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.core.count_nhoods" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>adata</p></li>
+<li><p>sample_col: string, column in adata.obs that contains sample information</p></li>
+</ul>
+<p>(what should be in the columns of the nhoodCount matrix)</p>
+<p>Returns: None
+Updated adata.uns slot to contain adata.uns[“nhood_adata”], where:
+- adata.uns[“nhood_adata”].obs_names are neighbourhoods
+- adata.uns[“nhood_adata”].var_names are samples
+- adata.uns[“nhood_adata”].X is the matrix counting the number of cells from each
+sample in each neighbourhood</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="milopy.core.DA_nhoods">
+<span class="sig-prename descclassname"><span class="pre">milopy.core.</span></span><span class="sig-name descname"><span class="pre">DA_nhoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">design</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_contrasts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_intercept</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.core.DA_nhoods" title="Permalink to this definition"></a></dt>
+<dd><p>This will perform differential neighbourhood abundance testing (using edgeR under the hood)
+- adata
+- design: formula (terms should be columns in adata.uns[“nhood_adata”].var)
+- model_contrasts: A string vector that defines the contrasts used to perform DA testing
+- subset_samples: subset of samples (columns in <cite>adata.uns[“nhood_adata”].X</cite>) to use for the test
+- add_intercept: whether to include an intercept in the model. If False, this is equivalent to adding + 0 in the design formula.
+When model_contrasts is specified, this is set to False by default.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="milopy.core._graph_spatialFDR">
+<span class="sig-prename descclassname"><span class="pre">milopy.core.</span></span><span class="sig-name descname"><span class="pre">_graph_spatialFDR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbors_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.core._graph_spatialFDR" title="Permalink to this definition"></a></dt>
+<dd><p>FDR correction weighted on inverse of connectivity of neighbourhoods.
+The distance to the k-th nearest neighbor is used as a measure of connectivity.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="milopy.core._try_import_bioc_library">
+<span class="sig-prename descclassname"><span class="pre">milopy.core.</span></span><span class="sig-name descname"><span class="pre">_try_import_bioc_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.core._try_import_bioc_library" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tests/test_plot/index.html" class="btn btn-neutral float-left" title="milopy.tests.test_plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../plot/index.html" class="btn btn-neutral float-right" title="milopy.plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Emma Dann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
