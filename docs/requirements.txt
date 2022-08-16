@@ -1,3 +1,2 @@
 myst_nb
 sphinx-rtd-theme
-autoapi-extension
