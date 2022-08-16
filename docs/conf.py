@@ -19,6 +19,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
+    "sphinx-apidoc"
 ]
 
 templates_path = ['_templates']
