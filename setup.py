@@ -16,6 +16,7 @@ setup(name='milopy',
           "scipy",
           "numpy",
           "matplotlib",
-          "rpy2 >= 3.3.5"
+          "rpy2 >= 3.3.5",
+          'leidenalg'
       ],
       zip_safe=False)
