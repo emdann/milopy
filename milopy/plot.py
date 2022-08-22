@@ -4,13 +4,14 @@ import numpy as np
 import anndata
 from typing import Union, Optional, Sequence, Any, Mapping, List, Tuple
 from anndata import AnnData
+from mudata import MuData
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
 def plot_nhood_graph(
-    adata: AnnData,
+    milo_mdata: MuData,
     alpha: float = 0.1,
     min_logFC: float = 0,
     min_size: int = 10,
@@ -23,7 +24,7 @@ def plot_nhood_graph(
 
     Params:
     -------
-    - adata: AnnData object
+    - milo_mdata: MuData object
     - alpha: significance threshold
     - min_logFC: minimum absolute log-Fold Change to show results (default: 0, show all significant neighbourhoods)
     - min_size: minimum size of nodes in visualization (default: 10)
@@ -31,7 +32,7 @@ def plot_nhood_graph(
     - title: plot title (default: 'DA log-Fold Change')
     - **kwargs: other arguments to pass to scanpy.pl.embedding
     '''
-    nhood_adata = adata.uns["nhood_adata"].copy()
+    nhood_adata = milo_mdata['samples'].T.copy()
 
     if "Nhood_size" not in nhood_adata.obs.columns:
         raise KeyError(
@@ -59,9 +60,8 @@ def plot_nhood_graph(
 
     sc.pl.embedding(nhood_adata, "X_milo_graph",
                     color="graph_color", cmap="RdBu_r",
-                    size=adata.uns["nhood_adata"].obs["Nhood_size"]*min_size,
+                    size=nhood_adata.obs["Nhood_size"]*min_size,
                     edges=plot_edges, neighbors_key="nhood",
-                    # edge_width =
                     sort_order=False,
                     frameon=False,
                     vmax=vmax, vmin=vmin,

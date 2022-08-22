@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='milopy',
-      version='0.0.99',
+      version='0.1.0',
       description='python implementation of miloR for differential abundance analysis in single-cell datasets',
       url='https://github.com/emdann/milopy',
       author='Emma Dann',
@@ -12,6 +12,7 @@ setup(name='milopy',
           "pandas",
           "anndata",
           "scanpy>=1.6.0",
+          "mudata>=0.2.0",
           "scipy",
           "numpy",
           "matplotlib",

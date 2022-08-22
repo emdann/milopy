@@ -7,6 +7,7 @@ import scipy.sparse
 import anndata
 from typing import Union, Optional, Sequence, Any, Mapping, List, Tuple
 from anndata import AnnData
+from mudata import MuData
 from scipy.sparse import csr_matrix
 import random
 import re
@@ -136,10 +137,10 @@ def count_nhoods(
     (what should be in the columns of the nhoodCount matrix)
 
     Returns: None
-    Updated adata.uns slot to contain adata.uns["nhood_adata"], where:
-    - adata.uns["nhood_adata"].obs_names are neighbourhoods
-    - adata.uns["nhood_adata"].var_names are samples
-    - adata.uns["nhood_adata"].X is the matrix counting the number of cells from each
+    Updated adata.uns slot to contain adata.uns["sample_adata"], where:
+    - adata.uns["sample_adata"].obs_names are neighbourhoods
+    - adata.uns["sample_adata"].var_names are samples
+    - adata.uns["sample_adata"].X is the matrix counting the number of cells from each
     sample in each neighbourhood
     '''
     try:
@@ -153,26 +154,42 @@ def count_nhoods(
     all_samples = sample_dummies.columns
     sample_dummies = scipy.sparse.csr_matrix(sample_dummies.values)
     nhood_count_mat = adata.obsm["nhoods"].T.dot(sample_dummies)
-    nhood_var = pd.DataFrame(index=all_samples)
-    nhood_adata = anndata.AnnData(X=nhood_count_mat, var=nhood_var)
-    nhood_adata.uns["sample_col"] = sample_col
+    sample_obs = pd.DataFrame(index=all_samples)
+    sample_adata = anndata.AnnData(X=nhood_count_mat.T, obs=sample_obs)
+    sample_adata.uns["sample_col"] = sample_col
     # Save nhood index info
-    nhood_adata.obs["index_cell"] = adata.obs_names[adata.obs["nhood_ixs_refined"] == 1]
-    nhood_adata.obs["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]
-                                                    == 1, "nhood_kth_distance"].values
-    adata.uns["nhood_adata"] = nhood_adata
+    sample_adata.var["index_cell"] = adata.obs_names[adata.obs["nhood_ixs_refined"] == 1]
+    sample_adata.var["kth_distance"] = adata.obs.loc[adata.obs["nhood_ixs_refined"]
+                                                     == 1, "nhood_kth_distance"].values
+    # adata.uns["sample_adata"] = sample_adata
+    # Make MuData object
+    milo_mdata = MuData({"cells": adata, "samples": sample_adata})
+    return(milo_mdata)
 
 
-def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_intercept=True):
+def DA_nhoods(milo_mdata: MuData,
+              design: str,
+              model_contrasts: str = None,
+              subset_samples: List[str] = None,
+              add_intercept: bool = True):
     '''
     This will perform differential neighbourhood abundance testing (using edgeR under the hood)
-    - adata
-    - design: formula (terms should be columns in adata.uns["nhood_adata"].var)
+    - milo_mdata: MuData object output of milopy.count_nhoods
+    - design: formula (terms should be columns in adata.uns["sample_adata"].var)
     - model_contrasts: A string vector that defines the contrasts used to perform DA testing
-    - subset_samples: subset of samples (columns in `adata.uns["nhood_adata"].X`) to use for the test
+    - subset_samples: subset of samples (columns in `adata.uns["sample_adata"].X`) to use for the test
     - add_intercept: whether to include an intercept in the model. If False, this is equivalent to adding + 0 in the design formula.
     When model_contrasts is specified, this is set to False by default. 
     '''
+
+    # Get data
+    try:
+        sample_adata = milo_mdata['samples']
+    except KeyError:
+        raise ValueError(
+            "milo_mdata should be a MuData object with two slots: 'cells' and 'samples' - please run milopy.count_nhoods(adata) first")
+    adata = milo_mdata['cells']
+
     # Set up rpy2 to run edgeR
     rpy2.robjects.numpy2ri.activate()
     rpy2.robjects.pandas2ri.activate()
@@ -181,45 +198,44 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
     stats = importr("stats")
     base = importr("base")
 
-    nhood_adata = adata.uns["nhood_adata"]
     covariates = [x.strip(" ") for x in set(
         re.split('\\+|\\*', design.lstrip("~ ")))]
 
-    # Add covariates used for testing to nhood_adata.var
-    sample_col = nhood_adata.uns["sample_col"]
+    # Add covariates used for testing to sample_adata.var
+    sample_col = sample_adata.uns["sample_col"]
     try:
-        nhoods_var = adata.obs[covariates + [sample_col]].drop_duplicates()
+        sample_obs = adata.obs[covariates + [sample_col]].drop_duplicates()
     except KeyError:
         missing_cov = [
-            x for x in covariates if x not in nhood_adata.var.columns]
+            x for x in covariates if x not in sample_adata.obs.columns]
         raise KeyError(
             'Covariates {c} are not columns in adata.obs'.format(
                 c=" ".join(missing_cov))
         )
-    # N.B. This might need some type adjustment!!
-    nhoods_var = nhoods_var[covariates + [sample_col]]
-    nhoods_var.index = nhoods_var[sample_col].astype("str")
+
+    sample_obs = sample_obs[covariates + [sample_col]]
+    sample_obs.index = sample_obs[sample_col].astype("str")
 
     try:
-        assert nhoods_var.loc[nhood_adata.var_names].shape[0] == len(
-            nhood_adata.var_names)
+        assert sample_obs.loc[sample_adata.obs_names].shape[0] == len(
+            sample_adata.obs_names)
     except:
         raise ValueError(
             "Covariates cannot be unambiguously assigned to each sample -- each sample value should match a single covariate value")
-    nhood_adata.var = nhoods_var.loc[nhood_adata.var_names]
+    sample_adata.obs = sample_obs.loc[sample_adata.obs_names]
     # Get design dataframe
     try:
-        design_df = nhood_adata.var[covariates]
+        design_df = sample_adata.obs[covariates]
     except KeyError:
         missing_cov = [
-            x for x in covariates if x not in nhood_adata.var.columns]
+            x for x in covariates if x not in sample_adata.obs.columns]
         raise KeyError(
-            'Covariates {c} are not columns in adata.uns["nhood_adata"].var'.format(
+            'Covariates {c} are not columns in adata.uns["sample_adata"].obs'.format(
                 c=" ".join(missing_cov))
         )
 
     # Get count matrix
-    count_mat = nhood_adata.X.toarray()
+    count_mat = sample_adata.X.T.toarray()
     lib_size = count_mat.sum(0)
 
     # Filter out samples with zero counts
@@ -227,7 +243,7 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
 
     # Subset samples
     if subset_samples is not None:
-        keep_smp = keep_smp & nhood_adata.var_names.isin(subset_samples)
+        keep_smp = keep_smp & sample_adata.obs_names.isin(subset_samples)
         design_df = design_df[keep_smp]
         for i, e in enumerate(design_df.columns):
             if design_df.dtypes[i].name == 'category':
@@ -279,27 +295,28 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
         res = pd.DataFrame(res)
 
     # Save outputs
-    res.index = nhood_adata.obs_names[keep_nhoods]
-    if any([x in nhood_adata.obs.columns for x in res.columns]):
-        nhood_adata.obs = nhood_adata.obs.drop(res.columns, axis=1)
-    nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
+    res.index = sample_adata.var_names[keep_nhoods]
+    if any([x in sample_adata.var.columns for x in res.columns]):
+        sample_adata.var = sample_adata.var.drop(res.columns, axis=1)
+    sample_adata.var = pd.concat([sample_adata.var, res], axis=1)
 
     # Run Graph spatial FDR correction
-    _graph_spatialFDR(adata, neighbors_key=adata.uns["nhood_neighbors_key"])
+    _graph_spatialFDR(
+        sample_adata, neighbors_key=adata.uns["nhood_neighbors_key"])
 
 
-def _graph_spatialFDR(adata, neighbors_key=None):
+def _graph_spatialFDR(sample_adata, neighbors_key=None):
     '''
     FDR correction weighted on inverse of connectivity of neighbourhoods.
     The distance to the k-th nearest neighbor is used as a measure of connectivity.
     '''
 
     # use 1/connectivity as the weighting for the weighted BH adjustment from Cydar
-    w = 1/adata.uns["nhood_adata"].obs['kth_distance']
+    w = 1/sample_adata.var['kth_distance']
     w[np.isinf(w)] = 0
 
     # Computing a density-weighted q-value.
-    pvalues = adata.uns["nhood_adata"].obs["PValue"]
+    pvalues = sample_adata.var["PValue"]
     keep_nhoods = ~pvalues.isna()  #  Filtering in case of test on subset of nhoods
     o = pvalues[keep_nhoods].argsort()
     pvalues = pvalues[keep_nhoods][o]
@@ -310,8 +327,8 @@ def _graph_spatialFDR(adata, neighbors_key=None):
     adjp = np.array([x if x < 1 else 1 for x in adjp])
 
     ## Store in anndata
-    adata.uns["nhood_adata"].obs["SpatialFDR"] = np.nan
-    adata.uns["nhood_adata"].obs.loc[keep_nhoods, "SpatialFDR"] = adjp
+    sample_adata.var["SpatialFDR"] = np.nan
+    sample_adata.var.loc[keep_nhoods, "SpatialFDR"] = adjp
 
 ## -- UTILS -- ##
 
