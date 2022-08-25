@@ -73,6 +73,12 @@ def plot_nhood_graph(
 def plot_nhood(adata, ix, basis="X_umap"):
     '''
     Visualize cells in a neighbourhood
+
+    Params:
+    ------
+    - adata: AnnData object, storing neighbourhood assignments in `adata.obsm['nhoods']`
+    - ix: index of neighbourhood to visualize
+    - basis: embedding to use for visualization (default: 'X_umap')
     '''
     adata.obs["Nhood"] = adata.obsm["nhoods"][:, ix].toarray().ravel()
     sc.pl.embedding(adata, basis, color="Nhood",

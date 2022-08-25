@@ -61,6 +61,12 @@ def build_nhood_graph(milo_mdata: MuData,
     -------
     - milo_mdata: MuData object
     - basis: string indicating the name of the obsm basis to use to use for layout of neighbourhoods (key in `adata.obsm`)
+
+    Returns:
+    -------
+    None, adds in place"
+    - `milo_mdata['samples'].varp['nhood_connectivities']`: graph of overlap between neighbourhoods (i.e. no of shared cells)
+    - `milo_mdata['samples'].var["Nhood_size"]`: number of cells in neighbourhoods
     '''
     adata = milo_mdata['cells']
     # # Add embedding positions
@@ -83,7 +89,17 @@ def add_covariate_to_nhoods_var(
         milo_mdata: MuData,
         new_covariates: List[str]):
     '''
-    Add covariate from adata.obs to adata.uns["nhood_adata"].var
+    Add covariate from cell-level obs to sample-level obs. These should be covariates for which a single value
+    can be assigned to each sample.
+
+    Params:
+    ------
+    - milo_mdata: MuData object
+    - new_covariates: list of strings indicating the columns in `milo_mdata['cells'].obs` to add to `milo_mdata['samples'].obs`
+
+    Returns:
+    -------
+    None, adds columns to `milo_mdata['samples']` in place
     '''
     try:
         sample_adata = milo_mdata['samples']
@@ -199,59 +215,3 @@ def annotate_nhoods_continuous(
     mean_anno_val = anno_val.toarray()/np.array(adata.obsm["nhoods"].T.sum(1))
 
     milo_mdata['samples'].var[f"nhood_{anno_col}"] = mean_anno_val
-
-
-# ## -- I/O -- ##
-# def write_milo_adata(adata: AnnData,
-#                      filepath: str,
-#                      **kwargs):
-#     '''
-#     Save anndata objects after Milo analysis
-
-#     Params:
-#     -----
-#     - adata: AnnData object with adata.uns["nhood_adata"]
-#     - filepath: path to h5ad file to save
-#     - **kwargs: arguments passed to scanpy.write_h5ad
-
-#     Returns:
-#     -------
-#     None, saves 2 AnnData objects in h5ad format. The cell x gene AnnData is saved in filepath.
-#     The nhood x sample AnnData is saved in a separate object (location is stored in adata.uns['nhood_adata_filepath'])
-#     '''
-#     nhood_filepath = filepath.split('.h5ad')[0] + ".nhood_adata.h5ad"
-#     adata.uns['nhood_adata_filepath'] = nhood_filepath
-#     try:
-#         if 'annotation_labels' in adata.uns['nhood_adata'].uns.keys():
-#             adata.uns['nhood_adata'].uns['annotation_labels'] = adata.uns['nhood_adata'].uns['annotation_labels'].tolist()
-#     except KeyError:
-#         raise KeyError(
-#             'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)')
-#     nhood_adata = adata.uns["nhood_adata"].copy()
-#     nhood_adata.write_h5ad(nhood_filepath, **kwargs)
-#     del adata.uns["nhood_adata"]
-#     adata.write_h5ad(filepath, **kwargs)
-
-
-# def read_milo_adata(
-#         filepath: str,
-#         **kwargs) -> AnnData:
-#     '''
-#     Read AnnData objects stored after Milo analysis
-
-#     Params:
-#     ------
-#     - filepath: path to h5ad file storing cell x gene AnnData object
-#     - **kwargs: additional arguments passed to scanpy.read_h5ad
-
-#     Returns:
-#     -------
-#     - AnnData object storing milo slots (adata.obsm['nhoods'], adata.uns['nhood_adata'])
-#     '''
-#     adata = sc.read_h5ad(filepath, **kwargs)
-#     try:
-#         nhood_filepath = adata.uns['nhood_adata_filepath']
-#     except:
-#         raise KeyError('No nhood_adata_file associated to adata')
-#     adata.uns["nhood_adata"] = sc.read_h5ad(nhood_filepath, **kwargs)
-#     return(adata)
