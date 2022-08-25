@@ -63,18 +63,18 @@ sc.pp.neighbors(adata, n_neighbors=10)
 milo.make_nhoods(adata)
 
 ## Count cells from each sample in each nhood
-milo.count_nhoods(adata, sample_col="sample")
+milo_mdata = milo.count_nhoods(adata, sample_col="sample")
 
 ## Test for differential abundance between conditions
-milo.DA_nhoods(adata, design="~ condition")
+milo.DA_nhoods(milo_mdata, design="~ condition")
 
 ## Check results
-milo_results = adata.uns["nhood_adata"].obs
+milo_results = milo_mdata['samples'].obs
 milo_results
 ```
 
 Visualize results on UMAP embedding
 ```python
-milopy.utils.build_nhood_graph(adata)
-milopy.plot.plot_nhood_graph(adata, alpha=0.2, min_size=5)
+milopy.utils.build_nhood_graph(milo_mdata)
+milopy.plot.plot_nhood_graph(milo_mdata, alpha=0.2, min_size=5)
 ```
