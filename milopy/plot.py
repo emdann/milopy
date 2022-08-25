@@ -4,13 +4,14 @@ import numpy as np
 import anndata
 from typing import Union, Optional, Sequence, Any, Mapping, List, Tuple
 from anndata import AnnData
+from mudata import MuData
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
 def plot_nhood_graph(
-    adata: AnnData,
+    milo_mdata: MuData,
     alpha: float = 0.1,
     min_logFC: float = 0,
     min_size: int = 10,
@@ -23,7 +24,7 @@ def plot_nhood_graph(
 
     Params:
     -------
-    - adata: AnnData object
+    - milo_mdata: MuData object
     - alpha: significance threshold
     - min_logFC: minimum absolute log-Fold Change to show results (default: 0, show all significant neighbourhoods)
     - min_size: minimum size of nodes in visualization (default: 10)
@@ -31,7 +32,7 @@ def plot_nhood_graph(
     - title: plot title (default: 'DA log-Fold Change')
     - **kwargs: other arguments to pass to scanpy.pl.embedding
     '''
-    nhood_adata = adata.uns["nhood_adata"].copy()
+    nhood_adata = milo_mdata['samples'].T.copy()
 
     if "Nhood_size" not in nhood_adata.obs.columns:
         raise KeyError(
@@ -59,9 +60,8 @@ def plot_nhood_graph(
 
     sc.pl.embedding(nhood_adata, "X_milo_graph",
                     color="graph_color", cmap="RdBu_r",
-                    size=adata.uns["nhood_adata"].obs["Nhood_size"]*min_size,
+                    size=nhood_adata.obs["Nhood_size"]*min_size,
                     edges=plot_edges, neighbors_key="nhood",
-                    # edge_width =
                     sort_order=False,
                     frameon=False,
                     vmax=vmax, vmin=vmin,
@@ -73,6 +73,12 @@ def plot_nhood_graph(
 def plot_nhood(adata, ix, basis="X_umap"):
     '''
     Visualize cells in a neighbourhood
+
+    Params:
+    ------
+    - adata: AnnData object, storing neighbourhood assignments in `adata.obsm['nhoods']`
+    - ix: index of neighbourhood to visualize
+    - basis: embedding to use for visualization (default: 'X_umap')
     '''
     adata.obs["Nhood"] = adata.obsm["nhoods"][:, ix].toarray().ravel()
     sc.pl.embedding(adata, basis, color="Nhood",
@@ -82,7 +88,7 @@ def plot_nhood(adata, ix, basis="X_umap"):
 
 
 def plot_DA_beeswarm(
-    adata: AnnData,
+    milo_mdata: MuData,
     anno_col: str = 'nhood_annotation',
     alpha: float = 0.1,
     subset_nhoods: List = None
@@ -92,16 +98,16 @@ def plot_DA_beeswarm(
 
     Params:
     -------
-    - adata: AnnData object
+    - milo_mdata: MuData object
     - anno_col: column in adata.uns['nhood_adata'].obs to use as annotation
     - alpha: significance threshold
     - subset_nhoods: list of nhoods to plot (default: None, plot all nhoods)
     '''
     try:
-        nhood_adata = adata.uns["nhood_adata"].copy()
+        nhood_adata = milo_mdata['samples'].T.copy()
     except KeyError:
         raise KeyError(
-            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+            "milo_mdata should be a MuData object with two slots: 'cells' and 'samples' - please run milopy.count_nhoods(adata) first"
         )
 
     if subset_nhoods is not None:
@@ -135,7 +141,7 @@ def plot_DA_beeswarm(
 
     try:
         anno_palette = _get_palette_adata(
-            adata, nhood_adata.uns['annotation_obs'])
+            milo_mdata['cells'], nhood_adata.uns['annotation_obs'])
         sns.violinplot(data=anno_df, y=anno_col, x="logFC", order=sorted_annos,
                        size=190, inner=None, orient="h",
                        palette=anno_palette,
@@ -160,7 +166,7 @@ def _get_palette_adata(adata, obs_col):
 
 ### Plot boxplot of cell numbers for QC ###
 def plot_nhood_counts_by_cond(
-        adata: AnnData,
+        milo_mdata: MuData,
         test_var: str,
         subset_nhoods: List = None,
         log_counts: bool = False):
@@ -169,16 +175,16 @@ def plot_nhood_counts_by_cond(
 
     Params:
     ------
-    - adata: anndata object storing neighbourhood information in adata.uns
+    - milo_mdata: MuData object storing cell level and nhood level information
     - test_var: string, name of column in adata.obs storing condition of interest (y-axis for boxplot)
     - subset_nhoods: list of obs_names for neighbourhoods to include in plot (default: None, plot all nhoods)
     - log_counts: boolean, whether to plot log1p of cell counts (default: False)
     '''
     try:
-        nhood_adata = adata.uns["nhood_adata"].copy()
+        nhood_adata = milo_mdata['samples'].T.copy()
     except KeyError:
         raise KeyError(
-            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+            "milo_mdata should be a MuData object with two slots: 'cells' and 'samples' - please run milopy.count_nhoods(adata) first"
         )
 
     if subset_nhoods is None:

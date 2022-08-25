@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>milopy.plot &mdash; milopy 0.0.999 documentation</title>
+  <title>milopy.plot &mdash; milopy 0.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
@@ -47,23 +47,10 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.core</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.plot</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.utils</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../version/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.version</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../milopy_example.html">Differential abundance analysis in python with <code class="docutils literal notranslate"><span class="pre">milopy</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -80,8 +67,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">API Reference</a> &raquo;</li>
-          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a> &raquo;</li>
+          <li><a href="../../../api.html">API</a> &raquo;</li>
       <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.plot</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/milopy/plot/index.rst.txt" rel="nofollow"> View page source</a>
@@ -104,29 +90,29 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_nhood_graph" title="milopy.plot.plot_nhood_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nhood_graph</span></code></a>(adata[, alpha, min_logFC, min_size, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_nhood_graph" title="milopy.plot.plot_nhood_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nhood_graph</span></code></a>(milo_mdata[, alpha, min_logFC, ...])</p></td>
 <td><p>Visualize DA results on abstracted graph (wrapper around sc.pl.embedding)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#milopy.plot.plot_nhood" title="milopy.plot.plot_nhood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nhood</span></code></a>(adata, ix[, basis])</p></td>
 <td><p>Visualize cells in a neighbourhood</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_DA_beeswarm" title="milopy.plot.plot_DA_beeswarm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_DA_beeswarm</span></code></a>(adata[, anno_col, alpha, subset_nhoods])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_DA_beeswarm" title="milopy.plot.plot_DA_beeswarm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_DA_beeswarm</span></code></a>(milo_mdata[, anno_col, alpha, ...])</p></td>
 <td><p>Plot beeswarm plot of logFC against nhood labels</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#milopy.plot._get_palette_adata" title="milopy.plot._get_palette_adata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_palette_adata</span></code></a>(adata, obs_col)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_nhood_counts_by_cond" title="milopy.plot.plot_nhood_counts_by_cond"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nhood_counts_by_cond</span></code></a>(adata, test_var[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.plot.plot_nhood_counts_by_cond" title="milopy.plot.plot_nhood_counts_by_cond"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nhood_counts_by_cond</span></code></a>(milo_mdata, test_var[, ...])</p></td>
 <td><p>Plot boxplot of cell numbers vs condition of interest</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.plot.plot_nhood_graph">
-<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_nhood_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_logFC</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'DA</span> <span class="pre">log-Fold</span> <span class="pre">Change'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_nhood_graph" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_nhood_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_logFC</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'DA</span> <span class="pre">log-Fold</span> <span class="pre">Change'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_nhood_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Visualize DA results on abstracted graph (wrapper around sc.pl.embedding)</p>
 <ul class="simple">
-<li><p>adata: AnnData object</p></li>
+<li><p>milo_mdata: MuData object</p></li>
 <li><p>alpha: significance threshold</p></li>
 <li><p>min_logFC: minimum absolute log-Fold Change to show results (default: 0, show all significant neighbourhoods)</p></li>
 <li><p>min_size: minimum size of nodes in visualization (default: 10)</p></li>
@@ -140,14 +126,19 @@
 <dt class="sig sig-object py" id="milopy.plot.plot_nhood">
 <span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_nhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'X_umap'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_nhood" title="Permalink to this definition"></a></dt>
 <dd><p>Visualize cells in a neighbourhood</p>
+<ul class="simple">
+<li><p>adata: AnnData object, storing neighbourhood assignments in <cite>adata.obsm[‘nhoods’]</cite></p></li>
+<li><p>ix: index of neighbourhood to visualize</p></li>
+<li><p>basis: embedding to use for visualization (default: ‘X_umap’)</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.plot.plot_DA_beeswarm">
-<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_DA_beeswarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nhood_annotation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_nhoods</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_DA_beeswarm" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_DA_beeswarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nhood_annotation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_nhoods</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_DA_beeswarm" title="Permalink to this definition"></a></dt>
 <dd><p>Plot beeswarm plot of logFC against nhood labels</p>
 <ul class="simple">
-<li><p>adata: AnnData object</p></li>
+<li><p>milo_mdata: MuData object</p></li>
 <li><p>anno_col: column in adata.uns[‘nhood_adata’].obs to use as annotation</p></li>
 <li><p>alpha: significance threshold</p></li>
 <li><p>subset_nhoods: list of nhoods to plot (default: None, plot all nhoods)</p></li>
@@ -161,10 +152,10 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.plot.plot_nhood_counts_by_cond">
-<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_nhood_counts_by_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_nhoods</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_nhood_counts_by_cond" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.plot.</span></span><span class="sig-name descname"><span class="pre">plot_nhood_counts_by_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_nhoods</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.plot.plot_nhood_counts_by_cond" title="Permalink to this definition"></a></dt>
 <dd><p>Plot boxplot of cell numbers vs condition of interest</p>
 <ul class="simple">
-<li><p>adata: anndata object storing neighbourhood information in adata.uns</p></li>
+<li><p>milo_mdata: MuData object storing cell level and nhood level information</p></li>
 <li><p>test_var: string, name of column in adata.obs storing condition of interest (y-axis for boxplot)</p></li>
 <li><p>subset_nhoods: list of obs_names for neighbourhoods to include in plot (default: None, plot all nhoods)</p></li>
 <li><p>log_counts: boolean, whether to plot log1p of cell counts (default: False)</p></li>

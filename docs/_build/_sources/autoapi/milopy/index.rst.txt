@@ -29,7 +29,7 @@ Package Contents
 ----------------
 
 .. py:data:: __version__
-   :annotation: = 0.0.999
+   :annotation: = 0.1.0
 
    
 

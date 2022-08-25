@@ -6,9 +6,9 @@ from milopy.utils import annotate_nhoods, annotate_nhoods_continuous
 
 
 @pytest.fixture
-def adata(seed=42):
-    adata = prep_nhood_matrix(seed)
-    return adata
+def milo_mdata(seed=42):
+    milo_mdata = prep_nhood_matrix(seed)
+    return milo_mdata
 
 
 def prep_nhood_matrix(seed):
@@ -28,30 +28,30 @@ def prep_nhood_matrix(seed):
     adata.obs["replicate"] = np.random.choice(
         ["R1", "R2", "R3"], size=adata.n_obs)
     adata.obs["sample"] = adata.obs["replicate"] + adata.obs["condition"]
-    count_nhoods(adata, sample_col='sample')
-    return adata
+    milo_mdata = count_nhoods(adata, sample_col='sample')
+    return milo_mdata
 
 # --- Annotate continuous tests ---
 
 # Test that mean values are within the expected range
 
 
-def test_nhood_mean_range(adata):
-    annotate_nhoods_continuous(adata, anno_col='S_score')
-    assert adata.uns['nhood_adata'].obs['nhood_S_score'].max(
-    ) < adata.obs['S_score'].max()
-    assert adata.uns['nhood_adata'].obs['nhood_S_score'].min(
-    ) > adata.obs['S_score'].min()
+def test_nhood_mean_range(milo_mdata):
+    annotate_nhoods_continuous(milo_mdata, anno_col='S_score')
+    assert milo_mdata['samples'].var['nhood_S_score'].max(
+    ) < milo_mdata['cells'].obs['S_score'].max()
+    assert milo_mdata['samples'].var['nhood_S_score'].min(
+    ) > milo_mdata['cells'].obs['S_score'].min()
 
 # Test that value corresponds to mean
 
 
-def test_correct_mean(adata):
-    annotate_nhoods_continuous(adata, anno_col='S_score')
-    i = np.random.choice(np.arange(adata.uns['nhood_adata'].n_obs))
-    mean_val_nhood = adata.obs[adata.obsm['nhoods']
-                               [:, i].toarray() == 1]['S_score'].mean()
-    assert adata.uns['nhood_adata'].obs['nhood_S_score'][i] == pytest.approx(
+def test_correct_mean(milo_mdata):
+    annotate_nhoods_continuous(milo_mdata, anno_col='S_score')
+    i = np.random.choice(np.arange(milo_mdata['samples'].n_obs))
+    mean_val_nhood = milo_mdata['cells'].obs[milo_mdata['cells'].obsm['nhoods']
+                                             [:, i].toarray() == 1]['S_score'].mean()
+    assert milo_mdata['samples'].var['nhood_S_score'][i] == pytest.approx(
         mean_val_nhood, 0.0001)
 
 
@@ -59,15 +59,14 @@ def test_correct_mean(adata):
 
 # Test that label fractions are in the correct range
 
-
-def test_nhood_annotation_frac_range(adata):
-    annotate_nhoods(adata, anno_col='louvain')
-    assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].max() <= 1.0
-    assert adata.uns['nhood_adata'].obs['nhood_annotation_frac'].min() >= 0.0
+def test_nhood_annotation_frac_range(milo_mdata):
+    annotate_nhoods(milo_mdata, anno_col='louvain')
+    assert milo_mdata['samples'].var['nhood_annotation_frac'].max() <= 1.0
+    assert milo_mdata['samples'].var['nhood_annotation_frac'].min() >= 0.0
 
 # Test continuous covariate gives error
 
 
-def test_nhood_annotation_cont_gives_error(adata):
+def test_nhood_annotation_cont_gives_error(milo_mdata):
     with pytest.raises(ValueError):
-        annotate_nhoods(adata, anno_col='S_score')
+        annotate_nhoods(milo_mdata, anno_col='S_score')
