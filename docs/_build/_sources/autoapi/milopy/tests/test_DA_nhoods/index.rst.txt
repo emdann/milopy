@@ -13,26 +13,30 @@ Functions
 
 .. autoapisummary::
 
-   milopy.tests.test_DA_nhoods.anndata
+   milopy.tests.test_DA_nhoods.milo_mdata
    milopy.tests.test_DA_nhoods.test_missing_covariate
    milopy.tests.test_DA_nhoods.test_non_unique_covariate
    milopy.tests.test_DA_nhoods.test_pvalues
    milopy.tests.test_DA_nhoods.test_fdr
+   milopy.tests.test_DA_nhoods.test_default_contrast
 
 
 
-.. py:function:: anndata(seed=42)
+.. py:function:: milo_mdata(seed=42)
 
 
-.. py:function:: test_missing_covariate(anndata)
+.. py:function:: test_missing_covariate(milo_mdata)
 
 
-.. py:function:: test_non_unique_covariate(anndata)
+.. py:function:: test_non_unique_covariate(milo_mdata)
 
 
-.. py:function:: test_pvalues(anndata)
+.. py:function:: test_pvalues(milo_mdata)
 
 
-.. py:function:: test_fdr(anndata)
+.. py:function:: test_fdr(milo_mdata)
+
+
+.. py:function:: test_default_contrast(milo_mdata)
 
 

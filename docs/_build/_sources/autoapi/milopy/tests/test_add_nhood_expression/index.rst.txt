@@ -1,0 +1,30 @@
+:py:mod:`milopy.tests.test_add_nhood_expression`
+================================================
+
+.. py:module:: milopy.tests.test_add_nhood_expression
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   milopy.tests.test_add_nhood_expression.mdata
+   milopy.tests.test_add_nhood_expression.test_nhood_mean_range
+   milopy.tests.test_add_nhood_expression.test_nhood_mean_range
+
+
+
+.. py:function:: mdata(seed=42)
+
+
+.. py:function:: test_nhood_mean_range(mdata)
+
+
+.. py:function:: test_nhood_mean_range(mdata)
+
+

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>milopy.utils &mdash; milopy 0.0.999 documentation</title>
+  <title>milopy.utils &mdash; milopy 0.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
@@ -27,7 +27,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="milopy.version" href="../version/index.html" />
+    <link rel="next" title="Differential abundance analysis in python with milopy" href="../../../milopy_example.html" />
     <link rel="prev" title="milopy.plot" href="../plot/index.html" /> 
 </head>
 
@@ -47,23 +47,10 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.core</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../plot/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.plot</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.utils</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../version/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.version</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../milopy_example.html">Differential abundance analysis in python with <code class="docutils literal notranslate"><span class="pre">milopy</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -80,8 +67,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">API Reference</a> &raquo;</li>
-          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy</span></code></a> &raquo;</li>
+          <li><a href="../../../api.html">API</a> &raquo;</li>
       <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">milopy.utils</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/milopy/utils/index.rst.txt" rel="nofollow"> View page source</a>
@@ -104,111 +90,88 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.add_nhood_expression" title="milopy.utils.add_nhood_expression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_nhood_expression</span></code></a>(adata[, layer])</p></td>
-<td><p>Calculates the mean expression in neighbourhoods of each feature in <cite>adata.X</cite> or</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.add_nhood_expression" title="milopy.utils.add_nhood_expression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_nhood_expression</span></code></a>(milo_mdata[, layer])</p></td>
+<td><p>Calculates the mean expression in neighbourhoods of each feature in <cite>milo_mdata['cells'].X</cite> or</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#milopy.utils.build_nhood_graph" title="milopy.utils.build_nhood_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_nhood_graph</span></code></a>(adata[, basis])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#milopy.utils.build_nhood_graph" title="milopy.utils.build_nhood_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_nhood_graph</span></code></a>(milo_mdata[, basis])</p></td>
 <td><p>Build graph of neighbourhoods used for visualization of DA results</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.add_covariate_to_nhoods_var" title="milopy.utils.add_covariate_to_nhoods_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_covariate_to_nhoods_var</span></code></a>(adata, new_covariates)</p></td>
-<td><p>Add covariate from adata.obs to adata.uns[&quot;nhood_adata&quot;].var</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.add_covariate_to_nhoods_var" title="milopy.utils.add_covariate_to_nhoods_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_covariate_to_nhoods_var</span></code></a>(milo_mdata, new_covariates)</p></td>
+<td><p>Add covariate from cell-level obs to sample-level obs. These should be covariates for which a single value</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#milopy.utils.annotate_nhoods" title="milopy.utils.annotate_nhoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate_nhoods</span></code></a>(adata, anno_col)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#milopy.utils.annotate_nhoods" title="milopy.utils.annotate_nhoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate_nhoods</span></code></a>(milo_mdata, anno_col)</p></td>
 <td><p>Assigns a categorical label to neighbourhoods, based on the most frequent label</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.annotate_nhoods_continuous" title="milopy.utils.annotate_nhoods_continuous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate_nhoods_continuous</span></code></a>(adata, anno_col)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.annotate_nhoods_continuous" title="milopy.utils.annotate_nhoods_continuous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate_nhoods_continuous</span></code></a>(milo_mdata, anno_col)</p></td>
 <td><p>Assigns a continuous value to neighbourhoods, based on mean cell level covariate stored in adata.obs.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#milopy.utils.write_milo_adata" title="milopy.utils.write_milo_adata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_milo_adata</span></code></a>(adata, filepath, **kwargs)</p></td>
-<td><p>Save anndata objects after Milo analysis</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#milopy.utils.read_milo_adata" title="milopy.utils.read_milo_adata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_milo_adata</span></code></a>(→ anndata.AnnData)</p></td>
-<td><p>Read AnnData objects stored after Milo analysis</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.utils.add_nhood_expression">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">add_nhood_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.add_nhood_expression" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates the mean expression in neighbourhoods of each feature in <cite>adata.X</cite> or
-<cite>adata.layers[layer]</cite> (if layer is not None).</p>
+<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">add_nhood_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.add_nhood_expression" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the mean expression in neighbourhoods of each feature in <cite>milo_mdata[‘cells’].X</cite> or
+<cite>milo_mdata[‘cells’][layer]</cite> (if layer is not None).</p>
 <ul class="simple">
-<li><p>adata: AnnData object</p></li>
-<li><p>layer: which data layer to use as expression matrix (default: None, uses <cite>adata.X</cite>)</p></li>
+<li><p>milo_mdata: MuData object</p></li>
+<li><p>layer: which data layer to use as expression matrix (default: None, uses <cite>milo_mdata[‘cells’].X</cite>)</p></li>
 </ul>
-<p>Updates adata in place to store the matrix of average expression in each neighbourhood in <cite>adata.uns[“nhood_adata”].obsm[‘expr’]</cite></p>
+<p>Updates adata in place to store the matrix of average expression in each neighbourhood in <cite>milo_mdata[‘samples’].varm[‘expr’]</cite></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.utils.build_nhood_graph">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">build_nhood_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X_umap'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.build_nhood_graph" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">build_nhood_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X_umap'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.build_nhood_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Build graph of neighbourhoods used for visualization of DA results</p>
 <ul class="simple">
-<li><p>adata: AnnData object</p></li>
+<li><p>milo_mdata: MuData object</p></li>
 <li><p>basis: string indicating the name of the obsm basis to use to use for layout of neighbourhoods (key in <cite>adata.obsm</cite>)</p></li>
 </ul>
+<p>None, adds in place”
+- <cite>milo_mdata[‘samples’].varp[‘nhood_connectivities’]</cite>: graph of overlap between neighbourhoods (i.e. no of shared cells)
+- <cite>milo_mdata[‘samples’].var[“Nhood_size”]</cite>: number of cells in neighbourhoods</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.utils.add_covariate_to_nhoods_var">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">add_covariate_to_nhoods_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_covariates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.add_covariate_to_nhoods_var" title="Permalink to this definition"></a></dt>
-<dd><p>Add covariate from adata.obs to adata.uns[“nhood_adata”].var</p>
+<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">add_covariate_to_nhoods_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_covariates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.add_covariate_to_nhoods_var" title="Permalink to this definition"></a></dt>
+<dd><p>Add covariate from cell-level obs to sample-level obs. These should be covariates for which a single value
+can be assigned to each sample.</p>
+<ul class="simple">
+<li><p>milo_mdata: MuData object</p></li>
+<li><p>new_covariates: list of strings indicating the columns in <cite>milo_mdata[‘cells’].obs</cite> to add to <cite>milo_mdata[‘samples’].obs</cite></p></li>
+</ul>
+<p>None, adds columns to <cite>milo_mdata[‘samples’]</cite> in place</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.utils.annotate_nhoods">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">annotate_nhoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.annotate_nhoods" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">annotate_nhoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.annotate_nhoods" title="Permalink to this definition"></a></dt>
 <dd><p>Assigns a categorical label to neighbourhoods, based on the most frequent label
 among cells in each neighbourhood. This can be useful to stratify DA testing
 results by cell types or samples.</p>
 <ul class="simple">
-<li><p>adata: AnnData object with adata.uns[“nhood_adata”]</p></li>
+<li><p>milo_mdata: MuData object</p></li>
 <li><p>anno_col: string indicating column in adata.obs containing the cell annotations to use for nhood labelling</p></li>
 </ul>
 <p>None. Adds in place:
-- <cite>adata.uns[“nhood_adata”].obs[“nhood_annotation”]</cite>: assigning a label to each nhood
-- <cite>adata.uns[“nhood_adata”].obs[“nhood_annotation_frac”]</cite> stores the fraciton of cells in the neighbourhood with the assigned label
-- <cite>adata.uns[“nhood_adata”].obsm[‘frac_annotation’]</cite>: stores the fraction of cells from each label in each nhood
-- <cite>adata.uns[“nhood_adata”].uns[“annotation_labels”]</cite>: stores the column names for <cite>adata.uns[“nhood_adata”].obsm[‘frac_annotation’]</cite></p>
+- <cite>milo_mdata[‘samples’].var[“nhood_annotation”]</cite>: assigning a label to each nhood
+- <cite>milo_mdata[‘samples’].var[“nhood_annotation_frac”]</cite> stores the fraciton of cells in the neighbourhood with the assigned label
+- <cite>milo_mdata[‘samples’].varm[‘frac_annotation’]</cite>: stores the fraction of cells from each label in each nhood
+- <cite>milo_mdata[‘samples’].uns[“annotation_labels”]</cite>: stores the column names for <cite>milo_mdata[‘samples’].varm[‘frac_annotation’]</cite></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="milopy.utils.annotate_nhoods_continuous">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">annotate_nhoods_continuous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.annotate_nhoods_continuous" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">annotate_nhoods_continuous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milo_mdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mudata.MuData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anno_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.annotate_nhoods_continuous" title="Permalink to this definition"></a></dt>
 <dd><p>Assigns a continuous value to neighbourhoods, based on mean cell level covariate stored in adata.obs.
 This can be useful to correlate DA log-foldChanges with continuous covariates such as pseudotime, gene expression scores etc…</p>
 <ul class="simple">
-<li><p>adata: AnnData object with adata.uns[“nhood_adata”]</p></li>
+<li><p>adata: MuData object</p></li>
 <li><p>anno_col: string indicating column in adata.obs containing the cell annotations to use for nhood labelling</p></li>
 </ul>
 <p>None. Adds in place:
-- <cite>adata.uns[“nhood_adata”].obs[“nhood_{anno_col}”]</cite>: assigning a continuous value to each nhood</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="milopy.utils.write_milo_adata">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">write_milo_adata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">anndata.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#milopy.utils.write_milo_adata" title="Permalink to this definition"></a></dt>
-<dd><p>Save anndata objects after Milo analysis</p>
-<ul class="simple">
-<li><p>adata: AnnData object with adata.uns[“nhood_adata”]</p></li>
-<li><p>filepath: path to h5ad file to save</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: arguments passed to scanpy.write_h5ad</p></li>
-</ul>
-<p>None, saves 2 AnnData objects in h5ad format. The cell x gene AnnData is saved in filepath.
-The nhood x sample AnnData is saved in a separate object (location is stored in adata.uns[‘nhood_adata_filepath’])</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="milopy.utils.read_milo_adata">
-<span class="sig-prename descclassname"><span class="pre">milopy.utils.</span></span><span class="sig-name descname"><span class="pre">read_milo_adata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">anndata.AnnData</span></span></span><a class="headerlink" href="#milopy.utils.read_milo_adata" title="Permalink to this definition"></a></dt>
-<dd><p>Read AnnData objects stored after Milo analysis</p>
-<ul class="simple">
-<li><p>filepath: path to h5ad file storing cell x gene AnnData object</p></li>
-<li><p><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs: additional arguments passed to scanpy.read_h5ad</p></li>
-</ul>
-<ul class="simple">
-<li><p>AnnData object storing milo slots (adata.obsm[‘nhoods’], adata.uns[‘nhood_adata’])</p></li>
-</ul>
+- <cite>milo_mdata[‘samples’].var[“nhood_{anno_col}”]</cite>: assigning a continuous value to each nhood</p>
 </dd></dl>
 
 </section>
@@ -220,7 +183,7 @@ The nhood x sample AnnData is saved in a separate object (location is stored in 
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../plot/index.html" class="btn btn-neutral float-left" title="milopy.plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../version/index.html" class="btn btn-neutral float-right" title="milopy.version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../../milopy_example.html" class="btn btn-neutral float-right" title="Differential abundance analysis in python with milopy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
