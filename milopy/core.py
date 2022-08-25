@@ -33,6 +33,8 @@ def make_nhoods(
     position. Thus, multiple neighbourhoods may be collapsed down together to
     prevent over-sampling the graph space.
 
+    Params:
+    -------
     - adata: AnnData object. Should contain a knn graph in `adata.obsp`
     - neighbors_key: string indicating the key in `adata.obsp` to use as KNN graph. If not specified, 
     `make_nhoods` looks .obsp[‘connectivities’] for connectivities (default storage places for
@@ -40,6 +42,14 @@ def make_nhoods(
     connectivities.
     - prop: fraction of cells to sample for neighbourhood index search (default: 0.1)
     - seed: random seed for cell sampling (default: 42)
+
+    Returns:
+    --------
+    None, adds in place:
+    - `adata.obsm['nhoods']`: a binary matrix of cell to neighbourhood assignments
+    - `adata.obs['nhood_ixs_refined']`: a boolean indicating whether a cell is an index for a neighbourhood
+    - `adata.obs['kth_distance']`: the distance to the kth nearest neighbour for each index cell (used for SpatialFDR correction)
+    - `adata.uns["nhood_neighbors_key"]`: stores the KNN graph key in `adata.obsp` used for neighbourhood construction
     '''
     # Get reduced dim used for KNN graph
     if neighbors_key is None:
@@ -132,15 +142,22 @@ def count_nhoods(
     sample_col: str,
 ):
     '''
-    - adata
-    - sample_col: string, column in adata.obs that contains sample information 
-    (what should be in the columns of the nhoodCount matrix)
+    Builds a sample-level AnnData object storing the matrix of cell counts per sample per neighbourhood.
 
-    Returns: None
-    Updated adata.uns slot to contain adata.uns["sample_adata"], where:
-    - adata.uns["sample_adata"].obs_names are neighbourhoods
-    - adata.uns["sample_adata"].var_names are samples
-    - adata.uns["sample_adata"].X is the matrix counting the number of cells from each
+    Params:
+    -------
+    - adata: AnnData object with neighbourhoods defined in `adata.obsm['nhoods']`
+    - sample_col: string, column in adata.obs that contains sample information 
+    (what should be in the columns of the cell count matrix)
+
+    Returns: 
+    --------
+    MuData object storing the original (i.e. cell-level) AnnData in `mudata['cells']`
+    and the sample-level anndata storing the neighbourhood cell counts in `mudata['samples']`.
+    Here:
+    - `mudata['samples'].obs_names` are samples (defined from `adata.obs['sample_col']`)
+    - `mudata['samples'].var_names` are neighbourhoods 
+    - `mudata['samples'].X` is the matrix counting the number of cells from each
     sample in each neighbourhood
     '''
     try:
@@ -173,13 +190,26 @@ def DA_nhoods(milo_mdata: MuData,
               subset_samples: List[str] = None,
               add_intercept: bool = True):
     '''
-    This will perform differential neighbourhood abundance testing (using edgeR under the hood)
-    - milo_mdata: MuData object output of milopy.count_nhoods
-    - design: formula (terms should be columns in adata.uns["sample_adata"].var)
-    - model_contrasts: A string vector that defines the contrasts used to perform DA testing
-    - subset_samples: subset of samples (columns in `adata.uns["sample_adata"].X`) to use for the test
-    - add_intercept: whether to include an intercept in the model. If False, this is equivalent to adding + 0 in the design formula.
+    Performs differential abundance testing on neighbourhoods using QLF test implementation from edgeR
+    (using R code under the hood)
+
+    Params:
+    -------
+    - milo_mdata: MuData object, output of `count_nhoods`
+    - design: formula for the test, following glm syntax from R (e.g. '~ condition'). Terms should be columns in `milo_mdata['cells'].obs`.
+    - model_contrasts: A string vector that defines the contrasts used to perform DA testing, following glm syntax from R (e.g. "conditionDisease - conditionControl").
+        If no contrast is specified (default), then the last categorical level in condition of interest is used as the test group.
+    - subset_samples: subset of samples (obs in `milo_mdata['samples']`) to use for the test
+    - add_intercept: whether to include an intercept in the model. If False, this is equivalent to adding + 0 in the design formula. 
     When model_contrasts is specified, this is set to False by default. 
+
+    Returns:
+    --------
+    None, modifies `milo_mdata['samples']` in place, adding the results of the DA test to `.var`:
+    - `logFC` stores the log fold change in cell abundance (coefficient from the GLM)
+    - `PValue` stores the p-value for the QLF test before multiple testing correction
+    - `SpatialFDR` stores the the p-value adjusted for multiple testing to limit the false discovery rate, 
+        calculated with weighted Benjamini-Hochberg procedure
     '''
 
     # Get data
