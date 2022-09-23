@@ -305,9 +305,10 @@ def _graph_spatialFDR(adata, neighbors_key=None):
     pvalues = pvalues[keep_nhoods][o]
     w = w[keep_nhoods][o]
 
-    adjp = np.zeros(shape=len(o))
+    adjp = pd.Series(np.zeros(shape=len(o)),
+                     index=adata.uns["nhood_adata"].obs_names)
     adjp[o] = (sum(w)*pvalues/np.cumsum(w))[::-1].cummin()[::-1]
-    adjp = np.array([x if x < 1 else 1 for x in adjp])
+    adjp[adjp > 1] = 1
 
     ## Store in anndata
     adata.uns["nhood_adata"].obs["SpatialFDR"] = np.nan
