@@ -55,7 +55,7 @@ def make_nhoods(
             )
     else:
         try:
-            use_rep = adata.uns["neighbors"]["params"]["use_rep"]
+            use_rep = adata.uns[neighbors_key]["params"]["use_rep"]
         except KeyError:
             logging.warning('Using X_pca as default embedding')
             use_rep = "X_pca"
@@ -285,10 +285,10 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
     nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
 
     # Run Graph spatial FDR correction
-    _graph_spatialFDR(adata, neighbors_key=adata.uns["nhood_neighbors_key"])
+    _graph_spatialFDR(adata)
 
 
-def _graph_spatialFDR(adata, neighbors_key=None):
+def _graph_spatialFDR(adata):
     '''
     FDR correction weighted on inverse of connectivity of neighbourhoods.
     The distance to the k-th nearest neighbor is used as a measure of connectivity.
@@ -305,9 +305,9 @@ def _graph_spatialFDR(adata, neighbors_key=None):
     pvalues = pvalues[keep_nhoods][o]
     w = w[keep_nhoods][o]
 
-    adjp = pd.Series(np.zeros(shape=len(o)),
-                     index=adata.uns["nhood_adata"].obs_names)
-    adjp[o] = (sum(w)*pvalues/np.cumsum(w))[::-1].cummin()[::-1]
+    adjp = pd.Series(np.zeros(shape=pvalues.shape),
+                     index=pvalues.index)
+    adjp = (sum(w)*pvalues/np.cumsum(w))[::-1].cummin()[::-1]
     adjp[adjp > 1] = 1
 
     ## Store in anndata
