@@ -27,7 +27,6 @@ def test_nhood_sizes():
 
 ## Test that the right KNN graph is used if specified ##
 
-
 def test_neighbors_key():
     k = adata_example.uns['neighbors']['params']['n_neighbors']
     test_k = 5
@@ -36,3 +35,4 @@ def test_neighbors_key():
     make_nhoods(adata_example, neighbors_key='test')
     smallest_size = adata_example.obsm['nhoods'].toarray().sum(0).min()
     assert smallest_size < k
+    assert adata_example.uns["nhood_neighbors_key"] == 'test'
