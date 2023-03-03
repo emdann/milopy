@@ -1,0 +1,35 @@
+:py:mod:`milopy`
+================
+
+.. py:module:: milopy
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   tests/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   core/index.rst
+   plot/index.rst
+   utils/index.rst
+   version/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :annotation: = 0.0.999
+
+   
+

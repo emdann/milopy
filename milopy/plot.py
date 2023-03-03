@@ -10,17 +10,19 @@ import seaborn as sns
 
 
 def plot_nhood_graph(
-    adata,
-    alpha=0.1,
-    min_logFC=0,
-    min_size=10,
-    plot_edges=False,
-    title="DA log-Fold Change",
+    adata: AnnData,
+    alpha: float = 0.1,
+    min_logFC: float = 0,
+    min_size: int = 10,
+    plot_edges: bool = False,
+    title: str = "DA log-Fold Change",
     **kwargs
 ):
     '''
     Visualize DA results on abstracted graph (wrapper around sc.pl.embedding)
 
+    Params:
+    -------
     - adata: AnnData object
     - alpha: significance threshold
     - min_logFC: minimum absolute log-Fold Change to show results (default: 0, show all significant neighbourhoods)
@@ -30,6 +32,12 @@ def plot_nhood_graph(
     - **kwargs: other arguments to pass to scanpy.pl.embedding
     '''
     nhood_adata = adata.uns["nhood_adata"].copy()
+
+    if "Nhood_size" not in nhood_adata.obs.columns:
+        raise KeyError(
+            'Cannot find "Nhood_size" column in adata.uns["nhood_adata"].obs -- \
+                please run milopy.utils.build_nhood_graph(adata)'
+        )
 
     nhood_adata.obs["graph_color"] = nhood_adata.obs["logFC"]
     nhood_adata.obs.loc[nhood_adata.obs["SpatialFDR"]
@@ -74,13 +82,20 @@ def plot_nhood(adata, ix, basis="X_umap"):
 
 
 def plot_DA_beeswarm(
-    adata,
-    anno_col='nhood_annotation',
-    alpha=0.1,
-    subset_nhoods=None
+    adata: AnnData,
+    anno_col: str = 'nhood_annotation',
+    alpha: float = 0.1,
+    subset_nhoods: List = None
 ):
     '''
     Plot beeswarm plot of logFC against nhood labels
+
+    Params:
+    -------
+    - adata: AnnData object
+    - anno_col: column in adata.uns['nhood_adata'].obs to use as annotation
+    - alpha: significance threshold
+    - subset_nhoods: list of nhoods to plot (default: None, plot all nhoods)
     '''
     try:
         nhood_adata = adata.uns["nhood_adata"].copy()
@@ -141,3 +156,47 @@ def plot_DA_beeswarm(
 
 def _get_palette_adata(adata, obs_col):
     return(dict(zip(adata.obs[obs_col].cat.categories, adata.uns[f'{obs_col}_colors'])))
+
+
+### Plot boxplot of cell numbers for QC ###
+def plot_nhood_counts_by_cond(
+        adata: AnnData,
+        test_var: str,
+        subset_nhoods: List = None,
+        log_counts: bool = False):
+    '''
+    Plot boxplot of cell numbers vs condition of interest
+
+    Params:
+    ------
+    - adata: anndata object storing neighbourhood information in adata.uns
+    - test_var: string, name of column in adata.obs storing condition of interest (y-axis for boxplot)
+    - subset_nhoods: list of obs_names for neighbourhoods to include in plot (default: None, plot all nhoods)
+    - log_counts: boolean, whether to plot log1p of cell counts (default: False)
+    '''
+    try:
+        nhood_adata = adata.uns["nhood_adata"].copy()
+    except KeyError:
+        raise KeyError(
+            'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)'
+        )
+
+    if subset_nhoods is None:
+        subset_nhoods = nhood_adata.obs_names
+
+    pl_df = pd.DataFrame(nhood_adata[subset_nhoods].X.A, columns=nhood_adata.var_names).melt(
+        var_name=nhood_adata.uns['sample_col'], value_name='n_cells')
+    pl_df = pd.merge(pl_df, nhood_adata.var)
+    pl_df['log_n_cells'] = np.log1p(pl_df['n_cells'])
+    if not log_counts:
+        sns.boxplot(data=pl_df, x=test_var, y='n_cells', color='lightblue')
+        sns.stripplot(data=pl_df, x=test_var, y='n_cells', color='black', s=3)
+        plt.ylabel('# cells')
+    else:
+        sns.boxplot(data=pl_df, x=test_var, y='log_n_cells', color='lightblue')
+        sns.stripplot(data=pl_df, x=test_var,
+                      y='log_n_cells', color='black', s=3)
+        plt.ylabel('log(# cells + 1)')
+
+    plt.xticks(rotation=90)
+    plt.xlabel(test_var)
