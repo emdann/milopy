@@ -283,7 +283,7 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
     res.index = nhood_adata.obs_names[keep_nhoods]
     if any([x in nhood_adata.obs.columns for x in res.columns]):
         nhood_adata.obs = nhood_adata.obs.drop(res.columns, axis=1)
-    nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
+    nhood_adata.obs = pd.concat([nhood_adata.obs, res], axis=1)
 
     # Run Graph spatial FDR correction
     _graph_spatialFDR(adata)
