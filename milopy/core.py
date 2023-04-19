@@ -228,10 +228,11 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
     # Subset samples
     if subset_samples is not None:
         keep_smp = keep_smp & nhood_adata.var_names.isin(subset_samples)
-        design_df = design_df[keep_smp]
-        for i, e in enumerate(design_df.columns):
-            if design_df.dtypes[i].name == 'category':
-                design_df[e] = design_df[e].cat.remove_unused_categories()
+    
+    design_df = design_df[keep_smp]
+    for i, e in enumerate(design_df.columns):
+        if design_df.dtypes[i].name == 'category':
+            design_df[e] = design_df[e].cat.remove_unused_categories()
 
     # Filter out nhoods with zero counts
     # (they can appear after sample filtering)
@@ -282,7 +283,7 @@ def DA_nhoods(adata, design, model_contrasts=None, subset_samples=None, add_inte
     res.index = nhood_adata.obs_names[keep_nhoods]
     if any([x in nhood_adata.obs.columns for x in res.columns]):
         nhood_adata.obs = nhood_adata.obs.drop(res.columns, axis=1)
-    nhood_adata.obs = pd.concat([nhood_adata.obs, res], 1)
+    nhood_adata.obs = pd.concat([nhood_adata.obs, res], axis=1)
 
     # Run Graph spatial FDR correction
     _graph_spatialFDR(adata)
