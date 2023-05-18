@@ -154,7 +154,8 @@ def annotate_nhoods(adata: AnnData,
                              index=adata.uns["nhood_adata"].obs_names
                              )
     adata.uns["nhood_adata"].obsm["frac_annotation"] = anno_frac.values
-    adata.uns["nhood_adata"].uns["annotation_labels"] = anno_frac.columns
+    # Turn this to list so that writing out h5ad works
+    adata.uns["nhood_adata"].uns["annotation_labels"] = anno_frac.columns.to_list()
     adata.uns["nhood_adata"].uns["annotation_obs"] = anno_col
     adata.uns["nhood_adata"].obs["nhood_annotation"] = anno_frac.idxmax(1)
     adata.uns["nhood_adata"].obs["nhood_annotation_frac"] = anno_frac.max(1)
@@ -217,10 +218,8 @@ def write_milo_adata(adata: AnnData,
     '''
     nhood_filepath = filepath.split('.h5ad')[0] + ".nhood_adata.h5ad"
     adata.uns['nhood_adata_filepath'] = nhood_filepath
-    try:
-        if 'annotation_labels' in adata.uns['nhood_adata'].uns.keys():
-            adata.uns['nhood_adata'].uns['annotation_labels'] = adata.uns['nhood_adata'].uns['annotation_labels'].tolist()
-    except KeyError:
+    
+    if 'nhood_adata' not in adata.uns.keys():
         raise KeyError(
             'Cannot find "nhood_adata" slot in adata.uns -- please run milopy.make_nhoods_adata(adata)')
     nhood_adata = adata.uns["nhood_adata"].copy()
