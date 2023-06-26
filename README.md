@@ -10,6 +10,7 @@ To run the differential abundance testing, the R package `edgeR` needs to be ins
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("edgeR")
+install.packages('statmod')
 ```
 
 Then the package can be installed from source
