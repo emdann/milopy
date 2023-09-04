@@ -147,7 +147,10 @@ def annotate_nhoods(adata: AnnData,
     anno_dummies = pd.get_dummies(adata.obs[anno_col])
     anno_count = adata.obsm["nhoods"].T.dot(
         scipy.sparse.csr_matrix(anno_dummies.values))
-    anno_frac = (anno_count/anno_count.sum(1)).toarray()
+    try:
+        anno_frac = (anno_count/anno_count.sum(1)).toarray()
+    except AttributeError: # for old version of python
+        anno_frac = np.array(anno_count/anno_count.sum(1))
 
     anno_frac = pd.DataFrame(anno_frac,
                              columns=anno_dummies.columns,
