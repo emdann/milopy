@@ -62,7 +62,12 @@ def make_nhoods(
         knn_graph = adata.obsp[neighbors_key + "_connectivities"].copy()
 
     # Get reduced dim
-    X_dimred = adata.obsm[use_rep]
+    if use_rep = 'X':
+        X_dimred = adata.X
+        if scipy.sparse.issparse(X_dimred)
+            X_dimred = X_dimred.A
+    else:
+        X_dimred = adata.obsm[use_rep]
 
     # Sample size
     n_ixs = int(np.round(adata.n_obs * prop))
