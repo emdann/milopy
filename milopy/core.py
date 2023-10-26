@@ -64,7 +64,7 @@ def make_nhoods(
     # Get reduced dim
     if use_rep == 'X':
         X_dimred = adata.X
-        if scipy.sparse.issparse(X_dimred)
+        if scipy.sparse.issparse(X_dimred):
             X_dimred = X_dimred.A
     else:
         X_dimred = adata.obsm[use_rep]
