@@ -19,6 +19,14 @@ git clone https://github.com/emdann/milopy.git
 cd milopy
 pip install .
 ```
+for conda users who have trouble installing with `pip install .` (An R instance needs to co-exist in the same environment).
+```bash
+conda install conda-forge::r-base
+git clone https://github.com/emdann/milopy.git
+cd milopy
+pip install .
+```
+
 
 ## Tutorial
 
@@ -30,6 +38,18 @@ pip install .
 ```python
 import scanpy as sc
 import numpy as np
+
+import milopy
+import milopy.core as milo
+```
+for conda users (The R root needs to be explicitly called to the running .ipynb session).
+```python
+import scanpy as sc
+import numpy as np
+
+import os
+import sys
+os.environ['R_HOME'] = sys.prefix + "\\lib\\R"
 
 import milopy
 import milopy.core as milo
