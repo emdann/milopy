@@ -1,7 +1,7 @@
 # milopy
-Basic python implementation of Milo for differential abundance testing on KNN graphs, to ease interoperability with [`scanpy`](https://scanpy.readthedocs.io/en/stable/index.html) pipelines for single-cell analysis. See our [preprint](https://www.biorxiv.org/content/10.1101/2020.11.23.393769v1) for details on the statistical framework.
+📢📢 **NEWS: an improved and actively maintained python implementation of Milo can be now found in [scverse/pertpy](https://github.com/scverse/pertpy) ([tutorial](https://pertpy.readthedocs.io/en/latest/tutorials/notebooks/milo.html)). This package will soon be archived.**
 
-**This implementation is experimental**, for a robust and fully functional implementation see our R package [`miloR`](https://github.com/MarioniLab/miloR).
+Basic python implementation of Milo for differential abundance testing on KNN graphs, to ease interoperability with [`scanpy`](https://scanpy.readthedocs.io/en/stable/index.html) pipelines for single-cell analysis. See our [preprint](https://www.biorxiv.org/content/10.1101/2020.11.23.393769v1) for details on the statistical framework.
 
 ## Installation
 
